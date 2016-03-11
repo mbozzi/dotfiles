@@ -41,7 +41,7 @@ end
 beautiful.init("/home/mjb/.config/awesome/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
-terminal = "urxtv"
+terminal = "urxvt"
 editor = os.getenv("EDITOR") or "nano"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -220,16 +220,15 @@ globalkeys = awful.util.table.join(
 
         awful.key({ modkey, altkey }, "Up",
         function ()
-            os.execute(string.format("amixer set %s 1%%+", volumewidget.channel))
-            volumewidget.update()
+            os.execute("amixer sset 'Headphone' 1%+")
         end),
-    awful.key({ modkey, altkey }, "Down",
+    awful.key({ modkey, "Control" }, "Down",
         function ()
-            os.execute(string.format("amixer set %s 1%%-", volumewidget.channel))
+            os.execute("amixer sset 'Headphone' 1%-")
         end),
-    awful.key({ modkey, altkey }, "m",
+    awful.key({ modkey, "Control" }, "m",
         function ()
-            os.execute(string.format("amixer set %s toggle", volumewidget.channel))
+            os.execute("amixer sset 'Headphone' toggle")
         end),
 
     awful.key({ modkey,           }, "j",
