@@ -8,10 +8,6 @@
 # Set the prompt string. 
 PS1='\[\e[36m\]\u\[\e[39m\]@\[\e[30;1m\]\h \[\e[36;49m\]\W\[\e[0m\]\$ \[\e[0m\]'
 
-# Set the default terminal.
-TERM='urxvt'
-
-# No fancy quotes.  I'm fine with plain-old ASCII for myself.
 export LC_ALL="C"
 
 # Set up XDG's configuration home:
@@ -47,6 +43,7 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias pacman='sudo pacman' # because I always forget
+alias g='git' # Because those two extra characters are a bitch.
 
 # Shortcuts:
 mkcd() { # Make a directory and change to it.
