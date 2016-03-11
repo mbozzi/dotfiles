@@ -28,7 +28,10 @@ export XAUTHORITY=~/prj/dotfiles/.Xauthority
 
 # Tell GNUPG to use ~/prj/dotfiles as it's home
 # so I can move the .gnupg directory out of my home folder
-export GNUPGHOME=~/prj/dotfiles
+export GNUPGHOME=~/prj/dotfiles/gnupg
+
+# Move Gimp's profile to the dotfiles folder:
+export GIMP2_DIRECTORY=~/prj/dotfiles/gimp-2.8
 
 # Some aliases:
 alias cim='vim'
