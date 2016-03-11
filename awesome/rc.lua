@@ -6,7 +6,6 @@ awful.rules     = require("awful.rules")
 local wibox     = require("wibox")
 local beautiful = require("beautiful")
 local naughty   = require("naughty")
-local drop      = require("scratchdrop")
 local lain      = require("lain")
 local menubar   = require("menubar")
 -- }}}

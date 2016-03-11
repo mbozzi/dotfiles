@@ -30,10 +30,6 @@ export XAUTHORITY=~/prj/dotfiles/.Xauthority
 # so I can move the .gnupg directory out of my home folder
 export GNUPGHOME=~/prj/dotfiles
 
-# Automagically make xterm transparent.  
-# I thought Xterm didn't support transparency.  :-D
-[ -n "$XTERM-VERSION" ] && transset-df -a > /dev/null
-
 # Some aliases:
 alias cim='vim'
 alias ec='emacsclient'
@@ -44,3 +40,18 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias pacman='sudo pacman'
+
+# Shortcuts:
+mkcd() { # Make a directory and change to it.
+	mkdir $1 && cd $1
+}
+
+cdla() { # Change to a directory and print all it's contents.
+	cd $1 && la
+}
+
+cdls() { # Change to a directory and print some of it's contents.
+	cd $1 && ls
+}
+
+

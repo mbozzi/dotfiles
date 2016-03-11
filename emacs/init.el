@@ -411,7 +411,7 @@ quotes, please!\n")))
 (require 'yasnippet)
 (setq-default yas-snippet-dirs
               (list (expand-file-name "~/.emacs.d/snippets/")))
-(yas-global-mode)
+(yas-global-mode nil) 
 
 (setq font-latex-fontify-sectioning 'color)
 (add-hook 'latex-mode-hook 'auto-fill-mode)
