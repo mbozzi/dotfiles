@@ -31,7 +31,7 @@
 
   (custom-theme-set-faces
    'heat
-   `(default                    ((,class (:foreground ,fg-3 :background ,bg-1))))
+   `(default                    ((,class (:foreground ,fg-3 :background ,bg-0))))
    `(compliation-error          ((,class (:foreground ,ac-1 :weight bold))))
    `(compilation-info           ((,class (:foreground ,md-3))))
    `(compilation-mode-line-run  ((,class (:foreground ,md-4 :background ,bg-1))))
@@ -41,7 +41,7 @@
    `(mode-line                  ((,class (:foreground ,ac-0 :weight bold :background ,bg-3))))
    `(mode-line-inactive         ((,class (:foreground ,fg-3 :weight bold :background ,bg-3))))
    `(fringe                     ((,class (:foreground ,bg-3))))
-   
+
    `(font-lock-builtin-face              ((,class (:foreground ,ac-0))))
    `(font-lock-comment-face              ((,class (:foreground ,md-0))))
    `(font-lock-constant-face             ((,class (:foreground ,fg-1))))
