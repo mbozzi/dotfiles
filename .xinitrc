@@ -43,5 +43,8 @@ redshift -l31.0:81.0 &
 # Start the compositor:
 xcompmgr -C &
 
+# Turn off that dumb touchpad:
+touchpad-off
+
 # And finally, Start The Awesome.
 exec awesome
