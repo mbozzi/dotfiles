@@ -315,7 +315,7 @@ quotes, please!\n")))
 (require 'iedit)
 
 (bind "C-,"     'other-window)
-(bind "C-x g"   'magit-status 'prog-mode-hook)
+(bind "C-x g"   'magit-status)
 (bind "jf"      'ace-jump-mode)
 (bind "kd"      'iy-go-to-char)
 (bind "kx"      'iy-go-to-char-backward)
@@ -377,6 +377,17 @@ quotes, please!\n")))
       (backward-sexp (if times times 0))
       (upcase-region (point) place))))
 
+(defun align-numbers (beg end)
+  (interactive "r")
+  (let (indent-tabs-mode
+        (align-rules-list
+         '((temporary
+            (regexp  . "\\( *[+-]?[0-9]*\\.\\)")
+            (group   . 1)
+            (justify . t)
+            (repeat  . t)))))
+    (align beg end)))
+
 (require 'slime)
 (defvar *my-common-lisp-interpreter* "/usr/bin/sbcl"
   "SLIME's default Lisp.")
@@ -411,7 +422,7 @@ quotes, please!\n")))
 (require 'yasnippet)
 (setq-default yas-snippet-dirs
               (list (expand-file-name "~/.emacs.d/snippets/")))
-(yas-global-mode nil) 
+(yas-global-mode nil)
 
 (setq font-latex-fontify-sectioning 'color)
 (add-hook 'latex-mode-hook 'auto-fill-mode)
