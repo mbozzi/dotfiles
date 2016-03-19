@@ -1,0 +1,16 @@
+#! /usr/bin/python
+# -*- Mode: python -*-
+
+import readline
+import atexit
+import sys
+import os
+
+readline_history_file = os.path.join(os.path.expanduser('~'), 'prj/dotfiles/python/.python_history')
+try:
+    readline.read_history_file(readline_history_file)
+except IOError:
+    pass
+
+readline.set_history_length(0)
+atexit.register(readline.write_history_file, readline_history_file)

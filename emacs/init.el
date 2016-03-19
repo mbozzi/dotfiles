@@ -80,7 +80,7 @@
 
 (add-to-list 'custom-theme-load-path
              (expand-file-name "~/.emacs.d/themes"))
-(load-theme 'heat)
+(load-theme 'billw)
 
 (setq-default fill-column 72)
 (auto-fill-mode)
@@ -217,10 +217,10 @@ otherwise, throws an error."
                  (dotimes (i (random number-forms)
                              (read (current-buffer)))
                    (read (current-buffer)))
-                 "\n"))))
+                 "\n"))))))
     (setq initial-scratch-message
           "You suck.  This is the default message.  Copy down some \
-quotes, please!\n")))
+quotes, please!\n")
 
 (defun inside-comment-p nil (nth 4 (syntax-ppss)))
 (defun inside-string-p nil (nth 3 (syntax-ppss)))
