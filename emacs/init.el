@@ -83,7 +83,6 @@
 (load-theme 'billw)
 
 (setq-default fill-column 72)
-(auto-fill-mode)
 
 (defmacro alambda (args &rest body)
   "Anaphoric lambda binding `self' to itself for recursion."
@@ -200,6 +199,8 @@ otherwise, throws an error."
 (define-key key-translation-map [9] [tab])
 (define-key key-translation-map [tab] [9])
 
+(message "made it to right-before startup quotes")
+
 ;; Start-up quotes
 (let ((message-file (expand-file-name
                      "~/.emacs.d/start-up-quotes.txt")))
@@ -214,13 +215,13 @@ otherwise, throws an error."
           (insert-file-contents message-file)
           (setq initial-scratch-message
                 (concat
-                 (dotimes (i (random number-forms)
+                 (dotimes (i (random (1- number-forms))
                              (read (current-buffer)))
                    (read (current-buffer)))
-                 "\n"))))))
+                 "\n"))))
     (setq initial-scratch-message
           "You suck.  This is the default message.  Copy down some \
-quotes, please!\n")
+quotes, please!\n")))
 
 (defun inside-comment-p nil (nth 4 (syntax-ppss)))
 (defun inside-string-p nil (nth 3 (syntax-ppss)))
@@ -425,7 +426,7 @@ quotes, please!\n")
 (yas-global-mode nil)
 
 (setq font-latex-fontify-sectioning 'color)
-(add-hook 'latex-mode-hook 'auto-fill-mode)
+(add-hook 'latex-mode-hook (lambda nil (auto-fill-mode)))
 
 (require 'flycheck)
 (add-hook 'c-mode-common-hook #'flycheck-mode)
@@ -483,6 +484,24 @@ abbreviations and then expand them all at once."
 (ad-activate 'delete-blank-lines)
 
 (setq disabled-command-hook nil)
+
+(require 'tramp)
+(require 'tramp-sh)
+(defconst my-tramp-prompt-regexp
+   (concat (regexp-opt '("Passcode or option (1-3): ") t)
+           "\\s-*")
+   "Regular expression matching my login prompt question.")
+
+(defun my-tramp-action (proc vec)
+  "Enter 1 to get duo authentication."
+  (save-window-excursion
+    (with-current-buffer (tramp-get-connection-buffer vec)
+      (tramp-message vec 6 "\n%s" (buffer-string))
+      (tramp-send-string vec "1"))))
+
+(defvar tramp-actions-before-shell)
+ (add-to-list 'tramp-actions-before-shell
+              '(my-tramp-prompt-regexp my-tramp-action))
 
 ;;  Missing C++ Keywords introduced in C++11:
 (font-lock-add-keywords
