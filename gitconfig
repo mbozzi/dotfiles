@@ -6,3 +6,4 @@
 	remember = commit --amend -C HEAD
 	config = config --system
 	ci = commit
+	st = status
