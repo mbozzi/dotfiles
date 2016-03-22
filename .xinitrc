@@ -44,7 +44,7 @@ redshift -l31.0:81.0 &
 xcompmgr -C &
 
 # Turn off that dumb touchpad:
-touchpad-off
+touchpad disable
 
 # And finally, Start The Awesome.
 exec awesome
