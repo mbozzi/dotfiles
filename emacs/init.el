@@ -329,6 +329,9 @@ quotes, please!\n")))
         (add-hook hook #'enable-paredit-mode))
       lisp-mode-common-hooks)
 
+(add-hook 'org-mode-hook
+          (lambda nil (local-unset-key (kbd "C-,"))))
+
 (require 'pretty-lambdada)
 (pretty-lambda-for-modes)
 
