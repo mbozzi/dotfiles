@@ -44,3 +44,9 @@ cdla() { # Change to a directory and print all it's contents.
 cdls() { # Change to a directory and print some of it's contents.
         cd $1 && ls
 }
+
+wifi-on  () {
+    # Use rfkill to see if the wifi switch is off.
+    sudo netctl start uscstudent &
+}
+wired-on () { sudo dhcpcd enp1s0; }
