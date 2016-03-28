@@ -1,30 +1,30 @@
-URxvt.transparent:	true
-URxvt.shading:		20
-URxvt.scrollBar:	false
+URxvt.transparent:      true
+URxvt.shading:          20
+URxvt.scrollBar:        false
 
-URxvt*foreground:	white
-URxvt*font:		xft:Clean:size=10
-URxvt*background:	black
+URxvt*foreground:       white
+URxvt*font:             xft:Clean:size=10
+URxvt*background:       black
 
-xterm*foreground:	white
-xterm*faceName:		Clean:size=10
-xterm*font:		7x13
-xterm*background:	black
+xterm*foreground:       white
+xterm*faceName:         Clean:size=10
+xterm*font:             7x13
+xterm*background:       black
 
-*color0:		#2E3436
-*color1:		#A40000
-*color2:		#4E9A06
-*color3:		#C4A000
-*color4:		#3465A4
-*color5:		#75507B
-*color6:		#CE5C00
-*color7:		#BABDB9
-*color8:		#555753
-*color9:		#EF2929
-*color10:		#8AE234
-*color11:		#FCE94F
-*color12:		#729FCF
-*color13:		#AD7FA8
-*color14:		#FCAF3E
-*color15:		#EEEEEC
+*color0:                #2E3436
+*color1:                #C43030
+*color2:                #4E9A06
+*color3:                #C4A000
+*color4:                #3C9393
+*color5:                #75507B
+*color6:                #CE5C00
+*color7:                #BABDB9
 
+*color8:                #555753
+*color9:                #FF2929
+*color10:               #8AE234
+*color11:               #FCE94F
+*color12:               #729FCF
+*color13:               #AD7FA8
+*color14:               #FCAF3E
+*color15:               #EEEEEC

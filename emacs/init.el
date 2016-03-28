@@ -429,7 +429,7 @@ quotes, please!\n")))
 (yas-global-mode nil)
 
 (setq font-latex-fontify-sectioning 'color)
-(add-hook 'latex-mode-hook (lambda nil (auto-fill-mode)))
+(add-hook 'LaTeX-mode-hook (lambda nil (auto-fill-mode)))
 
 (require 'flycheck)
 (add-hook 'c-mode-common-hook #'flycheck-mode)
