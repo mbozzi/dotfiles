@@ -325,12 +325,19 @@ quotes, please!\n")))
 (bind "<f5>"    'compile)
 (bind "s-SPC"   'pop-to-mark-command)
 
+(require 'wdired)
+(bind "C-c C-w" 'wdired-change-to-wdired-mode 'dired-mode-hook)
+dired-mode-hook
+
 (mapc (lambda (hook)
         (add-hook hook #'enable-paredit-mode))
       lisp-mode-common-hooks)
 
 (add-hook 'org-mode-hook
           (lambda nil (local-unset-key (kbd "C-,"))))
+
+(add-hook 'dired-mode-hook  (lambda nil (auto-revert-mode 1)))
+(add-hook 'wdired-mode-hook (lambda nil (auto-revert-mode 1)))
 
 (require 'pretty-lambdada)
 (pretty-lambda-for-modes)
