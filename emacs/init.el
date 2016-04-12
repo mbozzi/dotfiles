@@ -199,8 +199,6 @@ otherwise, throws an error."
 (define-key key-translation-map [9] [tab])
 (define-key key-translation-map [tab] [9])
 
-(message "made it to right-before startup quotes")
-
 ;; Start-up quotes
 (let ((message-file (expand-file-name
                      "~/.emacs.d/start-up-quotes.txt")))
@@ -231,6 +229,11 @@ quotes, please!\n")))
          (newline arg)))
 
 (setq inhibit-splash-screen t)
+
+(defbind c-new-line () ('("<C-M-return>") '(c++-mode-hook c-mode-hook))
+  "Add a semi-colon and newline at the end of the line."
+  (interactive)
+  (end-of-line) (insert ";") (newline) (indent-for-tab-command))
 
 (defbind rename-current-buffer-file () ('("C-c C-r"))
   "Renames current buffer and file it is visiting."
