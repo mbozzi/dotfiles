@@ -184,16 +184,45 @@ otherwise, throws an error."
 
 
 (defmacro defbind (name args bind-specs &rest body)
-  "Define a function with NAME, ARGS, BODY, with BIND-SPECS."
+  "Define a function with NAME, ARGS, BODY, with BIND-SPECS.
+
+defbind is similar to defun in that it defines a function named
+NAME, with a lambda-list specified by ARGS, performing the actions
+defined in BODY.
+
+The difference is that the defined function must be a
+command (i.e., it must have an `interactive' specifier), and it
+is immediately bound to key-maps according to BIND-SPECS.
+
+BIND-SPECS takes the form \(\(make-list-of-keys\)
+\(make-list-of-hooks\)\), where the expression make-list-of-keys
+evaluates to a list of keys to which the command will be bound,
+and the expression make-list-of-hooks evaluates to a list of
+hooks to which the command will be attached, or nil.  If
+make-list-of-hooks evaluates to nil, then the key will be bound
+globally.
+
+An example invocation is shown below.  The following will bind a
+new function named `lisp-end-of-list' to the keychord C-M-\; in
+all the modes whose hooks are contained in the variable
+`lisp-mode-common-hooks' .
+
+\(defbind lisp-end-of-list nil \('\(\"C-M-\;\"\)
+                                lisp-mode-common-hooks\)
+  \"Move point to the end of the current s-expression.\"
+  \(interactive\)
+  \(backward-up-list\)
+  \(forward-sexp\)
+  \(backward-char\)\)"
   `(progn
      (defun ,name ,args
        ,@(value-if body
-                   (lambda (b) (member 'interactive (flatten b)))
-                   (error "%s has no `interactive' specifier!" ',name)))
+           (lambda (b) (member 'interactive (flatten b)))
+           (error "%s has no `interactive' specifier!" ',name)))
      (nested-dolist (key hook) (,(car bind-specs)
                                 ,(value-if (cadr bind-specs) t
-                                ''(())))
-                    (bind key #',name hook))))
+                                           ''(())))
+       (bind key #',name hook))))
 
 (define-key function-key-map    [tab] nil)
 (define-key key-translation-map [9] [tab])
@@ -229,6 +258,21 @@ quotes, please!\n")))
          (newline arg)))
 
 (setq inhibit-splash-screen t)
+
+(require 'dired)
+(require 'wdired)
+(defbind dired-beginning-of-buffer ()
+  ('("M-<") '(dired-mode-hook wdired-mode-hook))
+  "Put the cursor on the first line of the file list."
+  (interactive)
+  (beginning-of-buffer)
+  (dired-next-line 2))
+(defbind dired-end-of-buffer ()
+  ('("M->") '(dired-mode-hook wdired-mode-hook))
+  "Put the cursor on the last line of the file list."
+  (interactive)
+  (end-of-buffer)
+  (dired-previous-line 1))
 
 (defbind c-new-line () ('("<C-M-return>") '(c++-mode-hook c-mode-hook))
   "Add a semi-colon and newline at the end of the line."
@@ -326,7 +370,7 @@ quotes, please!\n")))
 (bind "C-'"     'ff-find-other-file) (setq-default ff-always-in-other-window t)
 (bind "C-x C-d" 'dired)
 (bind "<f5>"    'compile)
-(bind "s-SPC"   'pop-to-mark-command)
+(bind "s-p"     'pop-to-mark-command)
 
 (require 'wdired)
 (bind "C-c C-w" 'wdired-change-to-wdired-mode 'dired-mode-hook)
