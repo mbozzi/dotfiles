@@ -11,20 +11,39 @@ xterm*faceName:         Clean:size=10
 xterm*font:             7x13
 xterm*background:       black
 
-*color0:                #2E3436
-*color1:                #C43030
-*color2:                #4E9A06
-*color3:                #C4A000
-*color4:                #3C9393
-*color5:                #75507B
-*color6:                #CE5C00
-*color7:                #BABDB9
+! special
+*.foreground:   #ffffff
+*.background:   #000000
+*.cursorColor:  #ffffff
 
-*color8:                #555753
-*color9:                #FF2929
-*color10:               #8AE234
-*color11:               #FCE94F
-*color12:               #729FCF
-*color13:               #AD7FA8
-*color14:               #FCAF3E
-*color15:               #EEEEEC
+! black
+*.color0:       #000000
+*.color8:       #4d4d4d
+
+! red
+*.color1:       #cc0403
+*.color9:       #3e0605
+
+! green
+*.color2:       #19cb00
+*.color10:      #23fd00
+
+! yellow
+*.color3:       #cecb00
+*.color11:      #fffd00
+
+! blue
+*.color4:       #001cd1
+*.color12:      #0026ff
+
+! magenta
+*.color5:       #cb1ed1
+*.color13:      #fd28ff
+
+! cyan
+*.color6:       #0dcdcd
+*.color14:      #14ffff
+
+! white
+*.color7:       #e5e5e5
+*.color15:      #ffffff
