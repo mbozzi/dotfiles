@@ -179,9 +179,10 @@ netwidget = lain.widgets.net({
 
 -- ALSA volume
 volumewidget = lain.widgets.alsa({
-    settings = function()
+      settings = function()
+        cmd = "amixer -c 1"
         header = " vol "
-        vlevel  = volume_now.level
+        vlevel = volume_now.level
 
         if volume_now.status == "off" then
             vlevel = vlevel .. "M "
@@ -384,17 +385,17 @@ globalkeys = awful.util.table.join(
     -- ALSA volume control
     awful.key({ modkey, "Control" }, "Up",
         function ()
-            os.execute(string.format("amixer set %s 1%%+", volumewidget.channel))
+            os.execute(string.format("amixer -c 1 set %s 1%%+", volumewidget.channel))
             volumewidget.update()
     end),
     awful.key({ modkey, "Control" }, "Down",
        function ()
-          os.execute(string.format("amixer set %s 1%%-", volumewidget.channel))
+          os.execute(string.format("amixer -c 1 set %s 1%%-", volumewidget.channel))
           volumewidget.update()
     end),
     awful.key({ modkey, "Control" }, "m",
        function ()
-          os.execute(string.format("amixer set %s toggle", volumewidget.channel))
+          os.execute(string.format("amixer -c 1 set %s toggle", volumewidget.channel))
           volumewidget.update()
     end),
 
