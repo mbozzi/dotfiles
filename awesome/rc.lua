@@ -62,10 +62,9 @@ editor     = os.getenv("EDITOR") or "nano" or "vi"
 editor_cmd = terminal .. " -e " .. editor
 
 -- user defined
-browser    = "dwb"
-browser2   = "iron"
-gui_editor = "gvim"
-graphics   = "gimp"
+web_browser = "chromium"
+gui_editor  = "emacs"
+graphics    = "gimp"
 
 -- lain
 lain.layout.termfair.nmaster = 3
@@ -139,8 +138,10 @@ cpuwidget = lain.widgets.sysload({
 tempwidget = lain.widgets.temp({
       settings = function()
          temp = ""
-         if coretemp_now > 70 then
-            temp = markup("#ff1010", coretemp_now)
+         if coretemp_now > 85 then
+            temp = markup("#ffa0a0")
+         elseif coretemp_now > 90 then
+            temp = markup("#df1010", coretemp_now)
          else
             temp = coretemp_now
          end
@@ -398,6 +399,11 @@ globalkeys = awful.util.table.join(
           os.execute(string.format("amixer -c 1 set %s toggle", volumewidget.channel))
           volumewidget.update()
     end),
+
+    -- Start Emacs
+    awful.key({ modkey, "Control" }, "e", function () awful.util.spawn(gui_editor) end),
+    -- Start chromium
+    awful.key({ modkey, "Control" }, "c", function () awful.util.spawn(web_browser) end),
 
     -- Prompt
     awful.key({ modkey }, "r", function () mypromptbox[mouse.screen]:run() end)
