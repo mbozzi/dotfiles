@@ -1,0 +1,11 @@
+# The following lines were added by compinstall
+
+zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
+zstyle ':completion:*' glob 1
+zstyle ':completion:*' matcher-list 'r:|[._-]=** r:|=**'
+zstyle ':completion:*' max-errors 3
+zstyle :compinstall filename '/home/mjb/.zshrc'
+
+autoload -Uz compinit
+compinit
+# End of lines added by compinstall
