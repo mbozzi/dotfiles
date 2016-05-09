@@ -72,17 +72,52 @@
   (load customization-file-path))
 (setq custom-file customization-file-path)
 
-(add-to-list 'default-frame-alist '(fullscreen   . fullscreen))
-(add-to-list 'default-frame-alist '(alpha        . 74))
+;;; (add-to-list 'default-frame-alist '(fullscreen   . maximized))
+
+;(add-to-list 'default-frame-alist '(alpha        . 74))
 (add-to-list 'default-frame-alist '(font         . "clean"))
 (add-to-list 'default-frame-alist '(fringe-style . '(2 . 2)))
 (set-fringe-style '(2 . 2))
 
+;(when (window-system)
+;  (set-default-font "Fira Code"))
+
+;; Followed by some compulsory black magic...
+;; (let ((alist '((33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
+;;                (35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
+;;                (36 . ".\\(?:>\\)")
+;;                (37 . ".\\(?:\\(?:%%\\)\\|%\\)")
+;;                (38 . ".\\(?:\\(?:&&\\)\\|&\\)")
+;;                (42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*/>]\\)")
+;;                (43 . ".\\(?:\\(?:\\+\\+\\)\\|[+>]\\)")
+;;                (45 . ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>}~-]\\)")
+;;                (46 . ".\\(?:\\(?:\\.[.<]\\)\\|[.=-]\\)")
+;;                (47 . ".\\(?:\\(?:\\*\\*\\|//\\|==\\)\\|[*/=>]\\)")
+;;                (48 . ".\\(?:x[a-zA-Z]\\)")
+;;                (58 . ".\\(?:::\\|[:=]\\)")
+;;                (59 . ".\\(?:;;\\|;\\)")
+;;                (60 . ".\\(?:\\(?:!--\\)\\|\\(?:~~\\|->\\|\\$>\\|\\*>\\|\\+>\\|--\\|<[<=-]\\|=[<=>]\\||>\\)\\|[*$+~/<=>|-]\\)")
+;;                (61 . ".\\(?:\\(?:/=\\|:=\\|<<\\|=[=>]\\|>>\\)\\|[<=>~]\\)")
+;;                (62 . ".\\(?:\\(?:=>\\|>[=>-]\\)\\|[=>-]\\)")
+;;                (63 . ".\\(?:\\(\\?\\?\\)\\|[:=?]\\)")
+;;                (91 . ".\\(?:]\\)")
+;;                (92 . ".\\(?:\\(?:\\\\\\\\\\)\\|\\\\\\)")
+;;                (94 . ".\\(?:=\\)")
+;;                (119 . ".\\(?:ww\\)")
+;;                (123 . ".\\(?:-\\)")
+;;                (124 . ".\\(?:\\(?:|[=|]\\)\\|[=>|]\\)")
+;;                (126 . ".\\(?:~>\\|~~\\|[>=@~-]\\)")
+;;                )
+;;              ))
+;;   (dolist (char-regexp alist)
+;;     (set-char-table-range composition-function-table (car char-regexp)
+;;                           `([,(cdr char-regexp) 0 font-shape-gstring]))))
+
 (add-to-list 'custom-theme-load-path
              (expand-file-name "~/.emacs.d/themes"))
-(load-theme 'billw)
+(load-theme 'solarized-dark)
 
-(setq-default fill-column 72)
+(setq-default fill-column 80)
 
 (defmacro alambda (args &rest body)
   "Anaphoric lambda binding `self' to itself for recursion."
@@ -372,9 +407,13 @@ quotes, please!\n")))
 (bind "<f5>"    'compile)
 (bind "s-p"     'pop-to-mark-command)
 
+;;; Don't know that this is the greatest....
+;; (bind "<f14>"   'god-local-mode)
+
 (require 'wdired)
+(require 'dired)
 (bind "C-c C-w" 'wdired-change-to-wdired-mode 'dired-mode-hook)
-dired-mode-hook
+(bind "C-s"     'dired-isearch-filenames-regexp 'dired-mode-hook)
 
 (mapc (lambda (hook)
         (add-hook hook #'enable-paredit-mode))
@@ -504,11 +543,16 @@ dired-mode-hook
 (setq-default flycheck-disabled-checkers '(c/c++-clang))
 (add-to-list 'flycheck-disabled-checkers 'c/c++-clang)
 
-(defvar preserve-tabs-major-modes '(makefile-mode makefile-gmake-mode))
+(defvar preserve-tabs-major-modes
+  '(makefile-mode makefile-gmake-mode m4-mode))
 (defun cleanup-buffer ()
   "Perform a bunch of operations on the whitespace content of a buffer.
 Doesn't indent the buffer, because it is used for a
-before-save-hook, and that might be bad."
+before-save-hook, and that might be bad.
+
+Also, do not delete the tabs if the buffer's major mode is set to
+one of the modes specified in the variable
+`preserve-tabs-major-modes'"
   (interactive)
   (unless (member major-mode preserve-tabs-major-modes)
    (untabify (point-min) (point-max)))
@@ -577,6 +621,12 @@ abbreviations and then expand them all at once."
 (put 'once-only 'lisp-indent-function 1)
 (put 'with-gensyms 'lisp-indent-function 1)
 (put 'nested-dolist 'lisp-indent-function 2)
+
+(require 'emms-setup)
+(emms-all)
+(emms-default-players)
+
+
 
 (provide '.emacs)
 ;;; .emacs ends here
