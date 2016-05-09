@@ -4,35 +4,55 @@
 ;;; Copyright (C) 2013-2015 Max Bozzi
 ;;; Version 2.2
 ;;;
-;;; This program is free software; you can redistribute it and/or
-;;; modify it under the terms of the GNU General Public License as
-;;; published by the Free Software Foundation, either version 3 of the
-;;; License, or (at your option) any later version.
+;;; This program is free software; you can redistribute it and/or modify it
+;;; under the terms of the GNU General Public License as published by the Free
+;;; Software Foundation, either version 3 of the License, or (at your option)
+;;; any later version.
 ;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;;; General Public License for more details.
+;;; This program is distributed in the hope that it will be useful, but WITHOUT
+;;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+;;; FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+;;; more details.
 ;;;
-;;; You should have received a copy of the GNU General Public License
-;;; along with this program.  If not, see
-;;; <http://www.gnu.org/licenses/>.
+;;; You should have received a copy of the GNU General Public License along with
+;;; this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 ;;;
-;;;  copy this file to the location of your Emacs initialization
-;;; file.  When loaded, this file will prompt you to download (or
-;;; attempt to download) all the referenced packages from Marmalade
-;;; or ELPA, respectively.
+;;; This is my init file.  If you want to get it to work, you best ask me to
+;;; find you a list of all the packages you need to install.  You can contact me
+;;; at mjb@mbozzi.com, and I will be happy to help.
+;;;
+;;; My computer's interface has been modified quite heavily, and this setup
+;;; reflects this.  Since I use a older laptop whose keyboard configuration is
+;;; not suitable for programming efficiently, I've had to adapt.
+;;;
+;;; Specifically, I have moved the Caps-Lock key, replacing it with another
+;;; control key.  I have changed the "Menu" key (immediately right of Right-Alt)
+;;; to an additional function key used as another modifier, physically moved the
+;;; Tab key over a bit more, toggled the quick-key option in BIOS to get my
+;;; function keys back, and replaced the "windows key" (immediately left of
+;;; Left-Alt) with a Super key.  I have switched each top-row number key (I
+;;; don't have a numeric keypad) with each corresponding symbol, so that I don't
+;;; type the Shift key to get !@#$%^&*(). The same has been done for
+;;; the brace and bracket keys ({} and []).
+;;;
+;;; I do not use Emacs from the terminal.  If you try to use this configuration
+;;; from the terminal, you'll regret it.  I type on a U.S. QWERTY keyboard and I
+;;; do touch type prose.  I am less marginally less-effective touch-typing
+;;; C-style code.
+;;;
+;;; Most of the default bindings are intact.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Code:
 
-;;; I don't understand what the point of the raster UI is at all.
-;;; This should get rid of it so we don't see it at all.
-(menu-bar-mode   -1)
-(tool-bar-mode   -1)
-(scroll-bar-mode -1)
+;;; This is Emacs.  I don't want raster UI.  Get rid of it so I don't see it at
+;;; all.
+(menu-bar-mode       -1)
+(tool-bar-mode       -1)
+(scroll-bar-mode     -1)
+(transient-mark-mode -1)
 (global-hl-line-mode)
 
 (display-time)
@@ -303,7 +323,7 @@ quotes, please!\n")))
   (forward-sexp)
   (backward-char))
 
-(defbind lisp-down-and-end-of-list nil ('("C-M-S-d") lisp-mode-common-hooks)
+(defbind down-and-end-of-list nil ('("s-d") lisp-mode-common-hooks)
   "Move point forward, down and to the end of the current s-expression."
   (interactive)
   (down-list)
@@ -372,8 +392,11 @@ quotes, please!\n")))
 (bind "<f5>"    'compile)
 ;;; Change the default compile command to look in the parent directory.
 (setq compile-command "pushd .. && make -kj2 ")
-
 (bind "s-p"     'pop-to-mark-command)
+(bind "s-C-p"   'push-mark-command)
+
+(bind "<f14> g" 'magit-status)
+(bind "<f14> l" 'magit-log)
 
 (require 'wdired)
 (require 'dired)
