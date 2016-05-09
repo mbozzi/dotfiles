@@ -17,6 +17,8 @@ export XAUTHORITY=~/prj/dotfiles/.Xauthority
 export GNUPGHOME=~/prj/dotfiles/gnupg
 export GIMP2_DIRECTORY=~/prj/dotfiles/gimp-2.8
 export PYTHONSTARTUP=~/prj/dotfiles/python/.pythonrc
+export CXX='ccache g++'
+export CC='ccache gcc'
 
 # Some aliases:
 alias cim='vim'
