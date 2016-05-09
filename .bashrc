@@ -47,6 +47,13 @@ cdls() { # Change to a directory and print some of it's contents.
 
 wifi-on  () {
     # Use rfkill to see if the wifi switch is off.
+    rfkill list | grep -qE 'blocked: yes'
+    if [ $? -eq 0 ]; then
+        printf "warning: Wireless may be blocked.  Check the switch.\n" #
+    fi
+
+    sudo netctl start bozzi-2    &
     sudo netctl start uscstudent &
 }
+
 wired-on () { sudo dhcpcd enp1s0; }
