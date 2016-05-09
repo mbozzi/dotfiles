@@ -73,45 +73,10 @@
 (setq custom-file customization-file-path)
 
 ;;; (add-to-list 'default-frame-alist '(fullscreen   . maximized))
-
-;(add-to-list 'default-frame-alist '(alpha        . 74))
+;;; (add-to-list 'default-frame-alist '(alpha        . 74))
 (add-to-list 'default-frame-alist '(font         . "clean"))
 (add-to-list 'default-frame-alist '(fringe-style . '(2 . 2)))
 (set-fringe-style '(2 . 2))
-
-;(when (window-system)
-;  (set-default-font "Fira Code"))
-
-;; Followed by some compulsory black magic...
-;; (let ((alist '((33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
-;;                (35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
-;;                (36 . ".\\(?:>\\)")
-;;                (37 . ".\\(?:\\(?:%%\\)\\|%\\)")
-;;                (38 . ".\\(?:\\(?:&&\\)\\|&\\)")
-;;                (42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*/>]\\)")
-;;                (43 . ".\\(?:\\(?:\\+\\+\\)\\|[+>]\\)")
-;;                (45 . ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>}~-]\\)")
-;;                (46 . ".\\(?:\\(?:\\.[.<]\\)\\|[.=-]\\)")
-;;                (47 . ".\\(?:\\(?:\\*\\*\\|//\\|==\\)\\|[*/=>]\\)")
-;;                (48 . ".\\(?:x[a-zA-Z]\\)")
-;;                (58 . ".\\(?:::\\|[:=]\\)")
-;;                (59 . ".\\(?:;;\\|;\\)")
-;;                (60 . ".\\(?:\\(?:!--\\)\\|\\(?:~~\\|->\\|\\$>\\|\\*>\\|\\+>\\|--\\|<[<=-]\\|=[<=>]\\||>\\)\\|[*$+~/<=>|-]\\)")
-;;                (61 . ".\\(?:\\(?:/=\\|:=\\|<<\\|=[=>]\\|>>\\)\\|[<=>~]\\)")
-;;                (62 . ".\\(?:\\(?:=>\\|>[=>-]\\)\\|[=>-]\\)")
-;;                (63 . ".\\(?:\\(\\?\\?\\)\\|[:=?]\\)")
-;;                (91 . ".\\(?:]\\)")
-;;                (92 . ".\\(?:\\(?:\\\\\\\\\\)\\|\\\\\\)")
-;;                (94 . ".\\(?:=\\)")
-;;                (119 . ".\\(?:ww\\)")
-;;                (123 . ".\\(?:-\\)")
-;;                (124 . ".\\(?:\\(?:|[=|]\\)\\|[=>|]\\)")
-;;                (126 . ".\\(?:~>\\|~~\\|[>=@~-]\\)")
-;;                )
-;;              ))
-;;   (dolist (char-regexp alist)
-;;     (set-char-table-range composition-function-table (car char-regexp)
-;;                           `([,(cdr char-regexp) 0 font-shape-gstring]))))
 
 (add-to-list 'custom-theme-load-path
              (expand-file-name "~/.emacs.d/themes"))
@@ -405,10 +370,10 @@ quotes, please!\n")))
 (bind "C-'"     'ff-find-other-file) (setq-default ff-always-in-other-window t)
 (bind "C-x C-d" 'dired)
 (bind "<f5>"    'compile)
-(bind "s-p"     'pop-to-mark-command)
+;;; Change the default compile command to look in the parent directory.
+(setq compile-command "pushd .. && make -kj2 ")
 
-;;; Don't know that this is the greatest....
-;; (bind "<f14>"   'god-local-mode)
+(bind "s-p"     'pop-to-mark-command)
 
 (require 'wdired)
 (require 'dired)
@@ -621,12 +586,6 @@ abbreviations and then expand them all at once."
 (put 'once-only 'lisp-indent-function 1)
 (put 'with-gensyms 'lisp-indent-function 1)
 (put 'nested-dolist 'lisp-indent-function 2)
-
-(require 'emms-setup)
-(emms-all)
-(emms-default-players)
-
-
 
 (provide '.emacs)
 ;;; .emacs ends here
