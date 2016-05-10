@@ -6,10 +6,16 @@ userresources=$dots/.Xresources
 usermodmap=$dots/.Xmodmap
 sysresources=/etc/X11/xinit/.Xresources
 sysmodmap=/etc/X11/xinit/.Xmodmap
+customkeymap=$dots/xkb/custom-map.xkb
 
 # Merge in the system's defaults and keymaps
 if [ -f $sysresources ]; then
     xrdb -merge $sysresources
+fi
+
+# Now integrate the custom keymap.
+if [ -f $customkeymap ]; then
+    xkbcomp $customkeymap $DISPLAY
 fi
 
 # Modify the system's keyboard mapping.
