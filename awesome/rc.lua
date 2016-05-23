@@ -1,10 +1,3 @@
---[[
-
-     Steamburn Awesome WM config 3.0
-     github.com/copycat-killer
-
---]]
-
 -- {{{ Required libraries
 local gears     = require("gears")
 local awful     = require("awful")
@@ -29,7 +22,7 @@ do
         if in_error then return end
         in_error = true
 
-        naughty.notify({ preset = naughty.config.presets.critical,
+        naughty.notify({ position = "bottom_left",
                          title = "Oops, an error happened!",
                          text = err })
         in_error = false
@@ -71,19 +64,18 @@ lain.layout.termfair.nmaster = 3
 lain.layout.termfair.ncol    = 1
 
 local layouts = {
-    awful.layout.suit.floating,
     lain.layout.uselessfair.horizontal,
     lain.layout.uselesstile,
     lain.layout.uselessfair,
+    lain.layout.centerwork,
     lain.layout.termfair,
-    lain.layout.uselesspiral.dwindle
 }
 -- }}}
 
 -- {{{ Tags
 tags = {
-   names = { "web", "term", "docs", "media", "down"},
-   layout = { layouts[1], layouts[3], layouts[4], layouts[1], layouts[6] }
+   names = { "ref", "edit", "cli", "med", "other" },
+   layout = { layouts[1], layouts[3], layouts[1], layouts[4], layouts[1] }
 }
 for s = 1, screen.count() do
    tags[s] = awful.tag(tags.names, s, tags.layout)
@@ -105,28 +97,10 @@ mymainmenu = awful.menu.new({ items = require("menugen").build_menu(),
 
 -- {{{ Wibox
 markup = lain.util.markup
-gray   = "#94928F"
+gray   = "#94827F"
 
 -- Textclock
 mytextclock = awful.widget.textclock(" %a, %b %d, %H:%M ")
-
--- MPD
-mpdwidget = lain.widgets.mpd({
-    settings = function()
-        artist = mpd_now.artist .. " "
-        title  = mpd_now.title  .. " "
-
-        if mpd_now.state == "pause" then
-            artist = "mpd "
-            title  = "paused "
-        elseif mpd_now.state == "stop" then
-            artist = ""
-            title  = ""
-        end
-
-        widget:set_markup(markup(gray, artist) .. title)
-    end
-})
 
 -- CPU
 cpuwidget = lain.widgets.sysload({
@@ -138,32 +112,26 @@ cpuwidget = lain.widgets.sysload({
 tempwidget = lain.widgets.temp({
       settings = function()
          temp = ""
-         if coretemp_now > 85 then
-            temp = markup("#ffa0a0")
-         elseif coretemp_now > 90 then
-            temp = markup("#df1010", coretemp_now)
+         if coretemp_now > 90 then
+            temp = markup("#df1010", "" .. coretemp_now)
+         elseif coretemp_now > 85 then
+            temp = markup("#ffa0a0", "" .. coretemp_now)
          else
             temp = coretemp_now
          end
          widget:set_markup(markup(gray, " core ") .. temp .. markup(gray, "°C "))
       end
 })
--- MEM
 memwidget = lain.widgets.mem({
     settings = function()
         widget:set_markup(markup(gray, " mem ") .. mem_now.used .. " ")
     end
 })
 
--- /home fs
-fshomeupd = lain.widgets.fs({
-    partition = "/home"
-})
-
 -- Battery
 batwidget = lain.widgets.bat({
     settings = function()
-        bat_perc = bat_now.perc
+       bat_perc = bat_now.perc .. markup(gray, "%")
         if bat_perc == "n/a" then bat_perc = "plug" end --
         widget:set_markup(markup(gray, " bat ") .. bat_perc .. " ")
     end
@@ -174,7 +142,7 @@ netwidget = lain.widgets.net({
     settings = function()
         if net_now.state == "up" then net_state = "on"
         else net_state = "off" end
-        widget:set_markup(markup(gray, " net ") .. net_state .. " ")
+        widget:set_markup(markup(gray, " network ") .. net_state .. " ")
     end
 })
 
@@ -186,9 +154,9 @@ volumewidget = lain.widgets.alsa({
         vlevel = volume_now.level
 
         if volume_now.status == "off" then
-            vlevel = vlevel .. "M "
+           vlevel = "mute "
         else
-            vlevel = vlevel .. " "
+           vlevel = vlevel .. markup(gray, "% ")
         end
 
         widget:set_markup(markup(gray, header) .. vlevel)
@@ -198,7 +166,7 @@ volumewidget = lain.widgets.alsa({
 -- Celsius to Fahrenheit
 -- D_f = (D_c * 9 / 5) + 32
 myweather = lain.widgets.weather({
-    city_id = 4575352, -- placeholder
+    city_id = 4575352, -- This is columbia, S.C..
     settings = function()
         descr = weather_now["weather"][1]["description"]:lower()
         units = (weather_now["main"]["temp"] * (9.0 / 5.0)) + 32.0
@@ -261,7 +229,8 @@ mytasklist.buttons = awful.util.table.join(
 -- Writes a string representation of the current layout in a textbox widget
 function updatelayoutbox(layout, s)
     local screen = s or 1
-    local txt_l = beautiful["layout_txt_" .. awful.layout.getname(awful.layout.get(screen))] or ""
+    local txt_l = beautiful["layout_txt_" .. awful.layout.getname(awful.layout.get(screen))]
+       or "[" .. awful.layout.getname(awful.layout.get (screen)) .. "]"
     layout:set_text(txt_l)
 end
 
@@ -271,7 +240,8 @@ for s = 1, screen.count() do
 
     -- Create a textbox widget which will contains a short string representing the
     -- layout we're using.  We need one layoutbox per screen.
-    txtlayoutbox[s] = wibox.widget.textbox(beautiful["layout_txt_" .. awful.layout.getname(awful.layout.get(s))])
+    name = awful.layout.getname(awful.layout.get(s))
+    txtlayoutbox[s] = wibox.widget.textbox(beautiful["layout_txt_" .. name])
     awful.tag.attached_connect_signal(s, "property::selected", function ()
         updatelayoutbox(txtlayoutbox[s], s)
     end)
@@ -335,12 +305,9 @@ root.buttons(awful.util.table.join(
 
 -- {{{ Key bindings
 globalkeys = awful.util.table.join(
-    -- Take a screenshot
-    -- https://github.com/copycat-killer/dots/blob/master/bin/screenshot
-    -- Tag browsing
-    awful.key({ modkey }, "Left",   awful.tag.viewprev       ),
-    awful.key({ modkey }, "Right",  awful.tag.viewnext       ),
-    awful.key({ modkey }, "Escape", awful.tag.history.restore),
+    awful.key({ modkey }, "{",   awful.tag.viewprev       ),
+    awful.key({ modkey }, "}",  awful.tag.viewnext       ),
+    awful.key({ modkey, }, "[", awful.tag.history.restore),
 
     -- Default client focus
     awful.key({ modkey }, "j",

@@ -25,7 +25,7 @@
 ;;;
 ;;; My computer's interface has been modified quite heavily, and this setup
 ;;; reflects this.  Since I use a older laptop whose keyboard configuration is
-;;; not suitable for programming efficiently, I've had to adapt.
+;;; not suitable for programming, I've had to make adjustments.
 ;;;
 ;;; Specifically, I have moved the Caps-Lock key, replacing it with another
 ;;; control key.  I have changed the "Menu" key (immediately right of Right-Alt)
@@ -108,6 +108,11 @@
   "Anaphoric lambda binding `self' to itself for recursion."
   `(labels ((self ,args ,@body))
      #'self))
+
+(defmacro aif (condition do-if-true &rest do-if-false)
+  "S"
+  `(let ((it ,condition))
+     (if it ,do-if-true ,@do-if-false)))
 
 (defun flatten (list)
   "Return a list of all the leaves of LIST as a tree."
@@ -280,6 +285,8 @@ quotes, please!\n")))
 (setq inhibit-splash-screen t)
 
 (require 'dired)
+(setq dired-listing-switches "-alDhB")
+
 (require 'wdired)
 (defbind dired-beginning-of-buffer ()
   ('("M-<") '(dired-mode-hook wdired-mode-hook))
@@ -372,24 +379,46 @@ quotes, please!\n")))
 (setq global-auto-revert-non-file-buffers t)
 (setq auto-revert-verbose nil)
 
-(defbind kill-this-buffer () ('("s-k"))
-  (interactive)
-  (kill-buffer nil))
-
 (require 'ace-jump-mode)
 (ace-jump-mode-enable-mark-sync)
+
+(require 'helm-config)
+(helm-mode 1)
+
+(bind "M-x" 'helm-M-x)
+(bind "C-x C-f" 'helm-find-files)
+
+(bind "M-y"       'helm-show-kill-ring)
+(bind "C-x C-f"   'helm-find-files)
+(bind "C-c <SPC>" 'helm-all-mark-rings)
+(bind "C-x r b"   'helm-filtered-bookmarks)
+(bind "C-h r"     'helm-info-emacs)
+(bind "C-:"       'helm-eval-expression-with-eldoc)
+(bind "C-h i"     'helm-info-at-point)
+(bind "C-x C-d"   'helm-browse-project)
+(bind "<f1>"      'helm-resume)
+(bind "C-h C-f"   'helm-apropos)
+(bind "C-h a"     'helm-apropos)
+(bind "<f2>"      'helm-execute-kmacro)
+(bind "C-c i"     'helm-imenu-in-all-buffers)
+(bind "C-s"       'helm-occur)
+(bind "C-*"       'dabbrev-expand)
+
+(define-key global-map [remap jump-to-register]      'helm-register)
+(define-key global-map [remap list-buffers]          'helm-mini)
 
 (require 'iy-go-to-char)
 (require 'iedit)
 
-(bind "C-,"     'other-window)
-(bind "C-x g"   'magit-status)
-(bind "jf"      'ace-jump-mode)
-(bind "C-'"     'ff-find-other-file) (setq-default ff-always-in-other-window t)
-(bind "C-x C-d" 'dired)
-(bind "<f5>"    'compile)
+(bind "C-,"      'other-window)
+(bind "C-x g"    'magit-status)
+(bind "jf"       'ace-jump-mode)
+(bind "C-'"      'ff-find-other-file) (setq-default ff-always-in-other-window t)
+(bind "C-x C-d"  'dired)
+(bind "<f5>"     'compile)
 ;;; Change the default compile command to look in the parent directory.
 (setq compile-command "pushd .. && make -kj2 ")
+
 (bind "s-p"     'pop-to-mark-command)
 (bind "s-C-p"   'push-mark-command)
 
@@ -432,10 +461,11 @@ quotes, please!\n")))
         (progn (delete-char -1) (delete-char 1))
       (progn (backward-delete-char-untabify 1)))))
 
+(setq iy-go-to-char-continue-when-repeating nil)
 (defbind fast-fix-typo (char) ('("M-/"))
-    (interactive "c")
-    (iy-go-to-char-backward 1 arg)
-    (forward-char))
+  (interactive "cGo back to char: ")
+  (iy-go-to-char-backward 1 char)
+  (forward-char))
 
 (defbind make-line-below-and-go-to-it (times) ('("C-M-o"))
   (interactive "p")
@@ -509,7 +539,7 @@ quotes, please!\n")))
 
 (require 'yasnippet)
 (setq-default yas-snippet-dirs
-              (list (expand-file-name "~/.emacs.d/snippets/")))
+              (list (expand-file-name "~/prj/dotfiles/emacs/snippets/")))
 (yas-global-mode nil)
 
 (setq font-latex-fontify-sectioning 'color)
@@ -612,6 +642,22 @@ abbreviations and then expand them all at once."
 (put 'once-only 'lisp-indent-function 1)
 (put 'with-gensyms 'lisp-indent-function 1)
 (put 'nested-dolist 'lisp-indent-function 2)
+
+(defun c-macroify-string (str)
+  (if str (upcase (replace-regexp-in-string "[\s-]+" "_" str)) ""))
+
+;;; The simple way of testing this isn't going to work in this file because
+;;; .emacs.d has lexical binding in it (so I can get closures for free).
+;;;
+;;; Call it from the scratch buffer or something and the dynamic binding will
+;;; give you what you expect.
+(defun project-name-or-guess ()
+  (if (and (boundp 'project-name) (stringp project-name))
+      project-name
+    (file-name-base
+     (replace-regexp-in-string ".*/\\(.+?\\)/?\\.?$" "\\1"
+                               (expand-file-name
+                                (concat default-directory "../"))))))
 
 (provide '.emacs)
 ;;; .emacs ends here
