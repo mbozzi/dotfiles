@@ -1,0 +1,40 @@
+# -*- mode: snippet -*-
+# name: header-file
+# key: header-file
+# binding: direct-keybinding
+# expand-env: ((file-extension (c-macroify-string (aif (buffer-file-name) (file-name-extension it) "h"))) (ad-hoc-project-name (project-name-or-guess)))
+# type: snippet
+# --
+/* This file is a part of ${1:`ad-hoc-project-name`}. */
+
+/* $1 is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * $1 is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+ * A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * $1.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+# if ! defined ${1:$(c-macroify-string yas-text)}_HEADER_${2:`
+(c-macroify-string (file-name-nondirectory
+                    (file-name-sans-extension
+                      (if (buffer-file-name)
+                          (buffer-file-name)
+                        "filename"))))
+        `$(c-macroify-string yas-text)}_${3:`
+        file-extension
+        `$(c-macroify-string yas-text)}
+# define ${1:$(c-macroify-string yas-text)}_HEADER_$2_${3:$(c-macroify-string yas-text)}
+
+/**
+ * \file
+ */
+
+$0
+
+# endif

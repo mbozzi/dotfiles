@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: macro-case
+# key: mc
+# binding: direct-keybinding
+# type: snippet
+# --
+${1:YOUR_MACRO$(replace-regexp-in-string " " "_" (upcase yas-text))}$0
