@@ -1,9 +1,8 @@
-# -*- mode: snippet -*-
-# name: header-file
 # key: header-file
-# binding: direct-keybinding
-# expand-env: ((file-extension (c-macroify-string (aif (buffer-file-name) (file-name-extension it) "h"))) (ad-hoc-project-name (project-name-or-guess)))
-# type: snippet
+# name: header-file
+# expand-env: ((file-extension (c-macroify-string (aif (buffer-file-name) (file-name-extension it) h))) (ad-hoc-project-name (project-name-or-guess)))# key: header-file
+# name: header-file
+# expand-env: ((file-extension (c-macroify-string (aif (buffer-file-name) (file-name-extension it) h))) (ad-hoc-project-name (project-name-or-guess)))
 # --
 /* This file is a part of ${1:`ad-hoc-project-name`}. */
 
@@ -37,4 +36,4 @@
 
 $0
 
-# endif
+# endif /* ${1:$(c-macroify-string yas-text)}_HEADER_$2_${3:$(c-macroify-string yas-text)} */

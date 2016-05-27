@@ -98,6 +98,13 @@
 (add-to-list 'default-frame-alist '(fringe-style . '(2 . 2)))
 (set-fringe-style '(2 . 2))
 
+(defun switch-theme-exclusive (theme)
+  (interactive)
+  (mapc (lambda (theme)
+          (disable-theme theme))
+        custom-enabled-themes)
+  (load-theme theme t))
+
 (add-to-list 'custom-theme-load-path
              (expand-file-name "~/.emacs.d/themes"))
 (load-theme 'solarized-dark)
@@ -110,7 +117,8 @@
      #'self))
 
 (defmacro aif (condition do-if-true &rest do-if-false)
-  "S"
+  "If statement binding the anaphor `if' to the result of
+CONDITION."
   `(let ((it ,condition))
      (if it ,do-if-true ,@do-if-false)))
 
@@ -122,6 +130,19 @@
                    (t        (nconc (self (car l) acc)
                                     (self (cdr l) acc)))))
            list nil))
+
+(defun allp (&rest args)
+  (block 'exit-early
+    (reduce (lambda (a b)
+              (if (and a b) t
+                (return-from 'exit-early)))
+            args)))
+
+(defun nonep (&rest args)
+  (block 'exit-early
+    (apply 'allp
+           (mapcar (lambda (a) (if a (return-from 'exit-early) t))
+                   args))))
 
 (require 'key-chord)
 (key-chord-mode t)
@@ -370,6 +391,8 @@ quotes, please!\n")))
    (end-of-line)
    (open-line n-times)))
 
+(setq tags-revert-without-query t)
+
 ;; (defbind dired-jump-to-bottom () ('("M->")
 ;;                                   '(dired-mode-hook))
 ;; (interactive)
@@ -403,9 +426,8 @@ quotes, please!\n")))
 (bind "C-c i"     'helm-imenu-in-all-buffers)
 (bind "C-s"       'helm-occur)
 (bind "C-*"       'dabbrev-expand)
-
-(define-key global-map [remap jump-to-register]      'helm-register)
-(define-key global-map [remap list-buffers]          'helm-mini)
+(bind "s-k"       'bury-buffer)
+(bind "C-x C-b"   'helm-buffers-list)
 
 (require 'iy-go-to-char)
 (require 'iedit)
@@ -546,7 +568,53 @@ quotes, please!\n")))
 (add-hook 'LaTeX-mode-hook (lambda nil (auto-fill-mode)))
 
 (require 'flycheck)
+
+;;; This bullshit is copied from flycheck.el, because the path to the tool is
+;;; hard-coded.  This isn't the correct way to do things, but I don't care about
+;;; this at the moment.
+(flycheck-define-checker c/c++-avr-gcc
+  "Check C/C++ using avr-gcc and the built-in code."
+  :command ("avr-gcc" "-fshow-column"
+            "-fno-diagnostics-show-caret"
+            "-fno-diagnostics-show-option"
+            "-Wp,-DF_CPU=16000000ul,-DARDUINO=10608,-DARDUINO_AVR_UNO,-DARDUINO_ARCH_AVR"
+            "-mmcu=atmega328p"
+            (option "-std=" flycheck-gcc-language-standard concat)
+            (option-flag "-pedantic" flycheck-gcc-pedantic)
+            (option-flag "-pedantic-errors" flycheck-gcc-pedantic-errors)
+            (option-flag "-fno-exceptions" flycheck-gcc-no-exceptions)
+            (option-flag "-fno-rtti" flycheck-gcc-no-rtti)
+            (option-flag "-fopenmp" flycheck-gcc-openmp)
+            (option-list "-include" flycheck-gcc-includes)
+            (option-list "-W" flycheck-gcc-warnings concat)
+            (option-list "-D" flycheck-gcc-definitions concat)
+            (option-list "-I" flycheck-gcc-include-path)
+            (eval flycheck-gcc-args)
+            "-x" (eval
+                  (pcase major-mode
+                    (`c++-mode "c++")
+                    (`c-mode "c")))
+            ;; GCC performs full checking only when actually compiling, so
+            ;; `-fsyntax-only' is not enough. Just let it generate assembly
+            ;; code.
+            "-S" "-o" null-device
+            ;; Read from standard input
+            "-")
+  :standard-input t
+  :error-patterns
+  ((info line-start (or "<stdin>" (file-name)) ":" line ":" column
+         ": note: " (message) line-end)
+   (warning line-start (or "<stdin>" (file-name)) ":" line ":" column
+            ": warning: " (message) line-end)
+   (error line-start (or "<stdin>" (file-name)) ":" line ":" column
+          ": " (or "fatal error" "error") ": " (message) line-end))
+  :modes (c-mode c++-mode)
+  :next-checkers ((warning . c/c++-cppcheck)))
+(add-to-list 'flycheck-checkers 'c/c++-avr-gcc)
+
 (add-hook 'c-mode-common-hook #'flycheck-mode)
+
+(put 'flycheck-gcc-args 'safe-local-variable (lambda (&rest args) t))
 
 (defvar flycheck-clang-language-standard)
 (add-hook 'c++-mode-hook
@@ -644,13 +712,11 @@ abbreviations and then expand them all at once."
 (put 'nested-dolist 'lisp-indent-function 2)
 
 (defun c-macroify-string (str)
-  (if str (upcase (replace-regexp-in-string "[\s-]+" "_" str)) ""))
+  (if str (replace-regexp-in-string
+           "^\\(_*[0-9]*\\)*" ""
+           (upcase (replace-regexp-in-string
+                    "[^A-Z0-9_]" "_" str))) ""))
 
-;;; The simple way of testing this isn't going to work in this file because
-;;; .emacs.d has lexical binding in it (so I can get closures for free).
-;;;
-;;; Call it from the scratch buffer or something and the dynamic binding will
-;;; give you what you expect.
 (defun project-name-or-guess ()
   (if (and (boundp 'project-name) (stringp project-name))
       project-name
@@ -658,6 +724,40 @@ abbreviations and then expand them all at once."
      (replace-regexp-in-string ".*/\\(.+?\\)/?\\.?$" "\\1"
                                (expand-file-name
                                 (concat default-directory "../"))))))
+
+(let ((c 4))
+ (lambda (a b) c))
+
+;;; Beaufort
+(setq calendar-latitude 32.4316)
+(setq calendar-longitude -80.6698)
+
+(defun sunrise-sunset-time-today nil
+  (require 'solar)
+  (require 'calendar)
+  (let* ((local-sunrise-sunset (solar-sunrise-sunset (calendar-current-date)))
+         (sunrise-time         (apply 'solar-time-string
+                                      (car local-sunrise-sunset)))
+         (sunset-time          (apply 'solar-time-string
+                                      (cadr local-sunrise-sunset))))
+    (list sunrise-time sunset-time)))
+
+(defun do-at-sunrise (function &rest args)
+  (let ((sunrise-time (car (sunrise-sunset-time-today))))
+    (run-at-time sunrise-time nil function args)))
+
+(defun do-at-sunset (function &rest args)
+  (let ((sunset-time (cadr (sunrise-sunset-time-today))))
+    (run-at-time sunset-time nil function args)))
+
+(defun do-every-sunrise (function &rest args)
+  (run-at-time nil (* 60 60 24) 'do-at-sunrise function args))
+
+(defun do-every-sunset (function &rest args)
+  (run-at-time nil (* 60 60 24) 'do-at-sunset function args))
+
+(do-every-sunrise (lambda (&rest ignored) (switch-theme-exclusive 'solarized-light)))
+(do-every-sunset  (lambda (&rest ignored) (switch-theme-exclusive 'solarized-dark)))
 
 (provide '.emacs)
 ;;; .emacs ends here

@@ -12,22 +12,23 @@
 		       ("fd" "auto ${1:name} (${2:args})${3: const} -> ${4:returntype};" "function-declaration" nil nil nil nil "direct-keybinding" nil)
 		       ("fp" "${1:int} ${2:function} (${3:params}) {\n         $0\n}\n" "function-prototype" nil nil nil nil "direct-keybinding" nil)
 		       ("gpl" "/* This file is a part of ${1:`(project-name-or-guess)`}. */\n\n/* $1 is free software: you can redistribute it and/or modify it under\n * the terms of the GNU General Public License as published by the Free Software\n * Foundation, either version 3 of the License, or (at your option) any later\n * version.\n *\n * $1 is distributed in the hope that it will be useful, but WITHOUT ANY\n * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR\n * A PARTICULAR PURPOSE.  See the GNU General Public License for more details.\n *\n * You should have received a copy of the GNU General Public License along with\n * $1.  If not, see <http://www.gnu.org/licenses/>.\n */\n$0" "gpl-license-header" nil nil nil nil nil nil)
-		       ("header-file" "/* This file is a part of ${1:`ad-hoc-project-name`}. */\n\n/* $1 is free software: you can redistribute it and/or modify it under\n * the terms of the GNU General Public License as published by the Free Software\n * Foundation, either version 3 of the License, or (at your option) any later\n * version.\n *\n * $1 is distributed in the hope that it will be useful, but WITHOUT ANY\n * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR\n * A PARTICULAR PURPOSE.  See the GNU General Public License for more details.\n *\n * You should have received a copy of the GNU General Public License along with\n * $1.  If not, see <http://www.gnu.org/licenses/>.\n */\n\n# if ! defined ${1:$(c-macroify-string yas-text)}_HEADER_${2:`\n(c-macroify-string (file-name-nondirectory\n                    (file-name-sans-extension\n                      (if (buffer-file-name)\n                          (buffer-file-name)\n                        \"filename\"))))\n        `$(c-macroify-string yas-text)}_${3:`\n        file-extension\n        `$(c-macroify-string yas-text)}\n# define ${1:$(c-macroify-string yas-text)}_HEADER_$2_${3:$(c-macroify-string yas-text)}\n\n/**\n * \\file\n */\n\n$0\n\n# endif\n" "header-file" nil nil
+		       ("header-file" "/* This file is a part of ${1:`ad-hoc-project-name`}. */\n\n/* $1 is free software: you can redistribute it and/or modify it under\n * the terms of the GNU General Public License as published by the Free Software\n * Foundation, either version 3 of the License, or (at your option) any later\n * version.\n *\n * $1 is distributed in the hope that it will be useful, but WITHOUT ANY\n * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR\n * A PARTICULAR PURPOSE.  See the GNU General Public License for more details.\n *\n * You should have received a copy of the GNU General Public License along with\n * $1.  If not, see <http://www.gnu.org/licenses/>.\n */\n\n# if ! defined ${1:$(c-macroify-string yas-text)}_HEADER_${2:`\n(c-macroify-string (file-name-nondirectory\n                    (file-name-sans-extension\n                      (if (buffer-file-name)\n                          (buffer-file-name)\n                        \"filename\"))))\n        `$(c-macroify-string yas-text)}_${3:`\n        file-extension\n        `$(c-macroify-string yas-text)}\n# define ${1:$(c-macroify-string yas-text)}_HEADER_$2_${3:$(c-macroify-string yas-text)}\n\n/**\n * \\file\n */\n\n$0\n\n# endif /* ${1:$(c-macroify-string yas-text)}_HEADER_$2_${3:$(c-macroify-string yas-text)} */\n" "header-file" nil nil
 			((file-extension
 			  (c-macroify-string
 			   (aif
 			    (buffer-file-name)
 			    (file-name-extension it)
-			    "h")))
+			    h)))
 			 (ad-hoc-project-name
 			  (project-name-or-guess)))
-			nil "direct-keybinding" nil)
+			nil nil nil)
 		       ("#\"" "# include \"$1\"$0\n" "include-system" nil nil nil nil "direct-keybinding" nil)
 		       ("#<" "# include <$1>\n$0" "include-system" nil nil nil nil nil nil)
 		       ("attr" "__attribute__ (($1))$0" "keyword-attr" nil nil nil nil "direct-keybinding" nil)
 		       ("br" "break" "break" nil nil nil nil "direct-keybinding" nil)
 		       ("c" "char" "char" nil nil nil nil "direct-keybinding" nil)
 		       ("cs" "const" "const" nil nil nil nil "direct-keybinding" nil)
+		       ("ce" "constexpr$0" "keyword-constexpr" nil nil nil nil "direct-keybinding" nil)
 		       ("cont" "continue" "continue" nil nil nil nil "direct-keybinding" nil)
 		       ("def" "default" "default" nil nil nil nil "direct-keybinding" nil)
 		       ("do" "do {\n   $0\n} while (${1:condition});" "keyword-do" nil nil nil nil "direct-keybinding" nil)
@@ -65,4 +66,4 @@
 		       ("main" "auto main (int, char **) -> int {\n     $0\n}" "main" nil nil nil nil "direct-keybinding" nil)))
 
 
-;;; Do not edit! File generated at Sun May 22 16:31:32 2016
+;;; Do not edit! File generated at Thu May 26 02:37:30 2016
