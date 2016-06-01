@@ -276,7 +276,7 @@ all the modes whose hooks are contained in the variable
 
 ;; Start-up quotes
 (let ((message-file (expand-file-name
-                     "~/.emacs.d/start-up-quotes.txt")))
+                     "~/prj/dotfiles/emacs/start-up-quotes.el")))
   (if (file-readable-p message-file)
       (let ((number-forms 0))
         (with-temp-buffer
