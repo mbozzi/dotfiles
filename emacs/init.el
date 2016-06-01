@@ -306,9 +306,15 @@ quotes, please!\n")))
 (setq inhibit-splash-screen t)
 
 (require 'dired)
+(require 'wdired)
+
 (setq dired-listing-switches "-alDhB")
 
-(require 'wdired)
+(defbind dired-go-to-home-directory ()
+  ('("~") '(dired-mode-hook wdired-mode-hook))
+  "Immediately open a dired buffer in the home directory."
+  (interactive)
+  (dired (getenv "HOME")))
 (defbind dired-beginning-of-buffer ()
   ('("M-<") '(dired-mode-hook wdired-mode-hook))
   "Put the cursor on the first line of the file list."
@@ -327,6 +333,7 @@ quotes, please!\n")))
   (interactive)
   (end-of-line) (insert ";") (newline) (indent-for-tab-command))
 
+;;; Thanks someone else for this code.
 (defbind rename-current-buffer-file () ('("C-c C-r"))
   "Renames current buffer and file it is visiting."
   (interactive)
@@ -418,6 +425,7 @@ quotes, please!\n")))
 (bind "C-h r"     'helm-info-emacs)
 (bind "C-:"       'helm-eval-expression-with-eldoc)
 (bind "C-h i"     'helm-info-at-point)
+(bind "C-x r i"   'helm-register)
 (bind "C-x C-d"   'helm-browse-project)
 (bind "<f1>"      'helm-resume)
 (bind "C-h C-f"   'helm-apropos)
@@ -756,8 +764,10 @@ abbreviations and then expand them all at once."
 (defun do-every-sunset (function &rest args)
   (run-at-time nil (* 60 60 24) 'do-at-sunset function args))
 
-(do-every-sunrise (lambda (&rest ignored) (switch-theme-exclusive 'solarized-light)))
-(do-every-sunset  (lambda (&rest ignored) (switch-theme-exclusive 'solarized-dark)))
+(do-every-sunrise (lambda (&rest ignored)
+                    (switch-theme-exclusive 'solarized-light)))
+(do-every-sunset  (lambda (&rest ignored)
+                    (switch-theme-exclusive 'solarized-dark)))
 
 (provide '.emacs)
 ;;; .emacs ends here
