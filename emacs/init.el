@@ -418,14 +418,14 @@ quotes, please!\n")))
 (bind "M-x" 'helm-M-x)
 (bind "C-x C-f" 'helm-find-files)
 
-(bind "M-y"       'helm-show-kill-ring)
+(bind "M-y"       'yank-pop)
 (bind "C-x C-f"   'helm-find-files)
 (bind "C-c <SPC>" 'helm-all-mark-rings)
 (bind "C-x r b"   'helm-filtered-bookmarks)
 (bind "C-h r"     'helm-info-emacs)
 (bind "C-:"       'helm-eval-expression-with-eldoc)
 (bind "C-h i"     'helm-info-at-point)
-(bind "C-x r i"   'helm-register)
+(bind "<f9>"      'helm-register)
 (bind "C-x C-d"   'helm-browse-project)
 (bind "<f1>"      'helm-resume)
 (bind "C-h C-f"   'helm-apropos)
@@ -507,16 +507,11 @@ quotes, please!\n")))
   (interactive)
   (insert "std::"))
 
-
 (defbind append-semicolon nil ('("C-c C-;") '(c++-mode-hook))
   (interactive)
   (save-excursion
     (end-of-line)
     (insert ";")))
-
-(defbind switch-to-scratch-buffer nil ('("<f6>"))
-  (interactive)
-  (switch-to-buffer "*scratch*"))
 
 (defbind upcase-last-sexp (times) ('("s-u"))
   (interactive "p")
