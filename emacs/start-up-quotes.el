@@ -27,8 +27,7 @@ Perhaps I can't express my fear as so visceral in words because
 it isn't -- perhaps it's just conflated emotion within everything
 that really doesn't matter."
 
-"All that remains is to convince myself of the fact that I should
-enjoy being scared."
+"All that remains is to compel myself to enjoy being scared."
 
 "Isn't language cool?"
 

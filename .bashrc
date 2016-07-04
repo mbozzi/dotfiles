@@ -8,19 +8,6 @@
 # Set the prompt string.
 PS1='\[\e[36m\]\u\[\e[39m\]@\[\e[30;1m\]\h \[\e[36;49m\]\W\[\e[0m\]\$ \[\e[0m\]'
 
-export LC_ALL="C"
-export XDG_CONFIG_HOME=$HOME/.config
-export EDITOR=vim
-export HISTFILE=~/prj/dotfiles/.bash_history
-export LESSHISTFILE=~/prj/dotfiles/.lesshst
-export XAUTHORITY=~/prj/dotfiles/.Xauthority
-export GNUPGHOME=~/doc/gnupg
-export GIMP2_DIRECTORY=~/prj/dotfiles/gimp-2.8
-export PYTHONSTARTUP=~/prj/dotfiles/python/.pythonrc
-export CCACHE_DIR=~/.cache/ccache
-export CXX='ccache g++'
-export CC='ccache gcc'
-
 # Some aliases:
 alias cim='vim'
 alias ec='emacsclient'

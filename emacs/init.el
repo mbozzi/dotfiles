@@ -49,10 +49,10 @@
 
 ;;; This is Emacs.  I don't want raster UI.  Get rid of it so I don't see it at
 ;;; all.
-(menu-bar-mode       -1)
-(tool-bar-mode       -1)
-(scroll-bar-mode     -1)
-(transient-mark-mode -1)
+(menu-bar-mode        -1)
+(tool-bar-mode        -1)
+(scroll-bar-mode      -1)
+(transient-mark-mode nil)
 (global-hl-line-mode)
 
 (display-time)
@@ -73,12 +73,25 @@
 
 ;;; Enable MELPA and GNU/ELPA repositories.
 (require 'package)
+(setq package-list '(cl package key-chord ace-jump-mode
+                        helm iy-go-to-char iedit org
+                        pretty-lambdada slime yasnippet flycheck tramp
+                        solarized))
+(setq package-archives  '(("melpa" . "http://melpa.milkbox.net/packages/")
+                          ("gnu"   . "http://elpa.gnu.org/packages/")
+                          ("elpa" . "http://tromey.com/elpa/")
+                          ("marmalade" . "http://marmalade-repo.org/packages/")))
+
 (package-initialize)
 
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/"))
-(add-to-list 'package-archives
-             '("gnu"   . "http://elpa.gnu.org/packages/"))
+(unless package-archive-contents
+  (package-refresh-contents))
+
+(dolist (package package-list)
+  (unless (package-installed-p package)
+    (package-install package)))
+
+(package-initialize)
 
 (defvar lisp-mode-common-hooks '(lisp-mode-hook
                                  emacs-lisp-mode-hook
@@ -152,7 +165,7 @@ CONDITION."
 
  COMMAND is any command -- i.e., any function for which
 `commandp' returns true.  KEY is a string representation of a
-key.
+key, i.e., as the argument to `kbd'.
 
 If HOOK is supplied, COMMAND will be bound to KEY locally when
 HOOK is run."
@@ -398,6 +411,8 @@ quotes, please!\n")))
    (end-of-line)
    (open-line n-times)))
 
+
+
 (setq tags-revert-without-query t)
 
 ;; (defbind dired-jump-to-bottom () ('("M->")
@@ -464,8 +479,16 @@ quotes, please!\n")))
         (add-hook hook #'enable-paredit-mode))
       lisp-mode-common-hooks)
 
+(require 'org)
 (add-hook 'org-mode-hook
           (lambda nil (local-unset-key (kbd "C-,"))))
+;;; Don't scale headings.
+(custom-set-faces
+  '(org-level-1 ((t (:inherit outline-1 :height 1.0))))
+  '(org-level-2 ((t (:inherit outline-2 :height 1.0))))
+  '(org-level-3 ((t (:inherit outline-3 :height 1.0))))
+  '(org-level-4 ((t (:inherit outline-4 :height 1.0))))
+  '(org-level-5 ((t (:inherit outline-5 :height 1.0)))))
 
 (add-hook 'dired-mode-hook  (lambda nil (auto-revert-mode 1)))
 (add-hook 'wdired-mode-hook (lambda nil (auto-revert-mode 1)))
@@ -572,9 +595,8 @@ quotes, please!\n")))
 
 (require 'flycheck)
 
-;;; This bullshit is copied from flycheck.el, because the path to the tool is
-;;; hard-coded.  This isn't the correct way to do things, but I don't care about
-;;; this at the moment.
+;;; This is largely copied from flycheck.el, because the path to the tool is
+;;; hard-coded.
 (flycheck-define-checker c/c++-avr-gcc
   "Check C/C++ using avr-gcc and the built-in code."
   :command ("avr-gcc" "-fshow-column"
@@ -728,11 +750,8 @@ abbreviations and then expand them all at once."
                                (expand-file-name
                                 (concat default-directory "../"))))))
 
-(let ((c 4))
- (lambda (a b) c))
-
 ;;; Beaufort
-(setq calendar-latitude 32.4316)
+(setq calendar-latitude   32.4316)
 (setq calendar-longitude -80.6698)
 
 (defun sunrise-sunset-time-today nil
@@ -759,10 +778,24 @@ abbreviations and then expand them all at once."
 (defun do-every-sunset (function &rest args)
   (run-at-time nil (* 60 60 24) 'do-at-sunset function args))
 
-(do-every-sunrise (lambda (&rest ignored)
-                    (switch-theme-exclusive 'solarized-light)))
-(do-every-sunset  (lambda (&rest ignored)
-                    (switch-theme-exclusive 'solarized-dark)))
+;;;  This is a bit broken at the moment.
+;; (do-every-sunrise
+;;  (lambda (&rest ignored)
+;;    (message "switching to light theme on sunrise timer.")
+;;    (switch-theme-exclusive 'solarized-light)))
+;; (do-every-sunset
+;;  (lambda (&rest ignored)
+;;    (message "switching to dark theme on sunset timer.")
+;;    (switch-theme-exclusive 'solarized-dark)))
+
+(defun down-list-or-next (arg)
+  (interactive "p")
+  (condition-case ex
+      (down-list arg)
+    ('error
+     (up-list) (down-list-or-next arg))))
+
+(define-key global-map [remap down-list] 'down-list-or-next)
 
 (provide '.emacs)
 ;;; .emacs ends here

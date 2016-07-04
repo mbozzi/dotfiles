@@ -1,3 +1,6 @@
 .*_history
 .lesshst
 .Xauthority
+/.zcompdump
+/.zcompdump-mbozzi-arch-5.2
+/.zdirs

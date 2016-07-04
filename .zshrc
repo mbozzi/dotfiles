@@ -69,3 +69,5 @@ wifi-on  () {
 wired-on () {
     sudo dhcpcd enp1s0
 }
+
+eval $(thefuck --alias)
