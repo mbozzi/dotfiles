@@ -76,7 +76,7 @@
 (setq package-list '(cl package key-chord ace-jump-mode
                         helm iy-go-to-char iedit org
                         pretty-lambdada slime yasnippet flycheck tramp
-                        solarized))
+                        solarized-theme paredit))
 (setq package-archives  '(("melpa" . "http://melpa.milkbox.net/packages/")
                           ("gnu"   . "http://elpa.gnu.org/packages/")
                           ("elpa" . "http://tromey.com/elpa/")
