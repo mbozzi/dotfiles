@@ -76,7 +76,7 @@
 (setq package-list '(cl package key-chord ace-jump-mode
                         helm iy-go-to-char iedit org
                         pretty-lambdada slime yasnippet flycheck tramp
-                        solarized))
+                        solarized-theme reykjavik-theme))
 (setq package-archives  '(("melpa" . "http://melpa.milkbox.net/packages/")
                           ("gnu"   . "http://elpa.gnu.org/packages/")
                           ("elpa" . "http://tromey.com/elpa/")
@@ -106,7 +106,7 @@
 (setq custom-file customization-file-path)
 
 ;;; (add-to-list 'default-frame-alist '(fullscreen   . maximized))
-;;; (add-to-list 'default-frame-alist '(alpha        . 74))
+;;; (add-to-list 'default-frame-alist '(alpha        . 84))
 (add-to-list 'default-frame-alist '(font         . "clean"))
 (add-to-list 'default-frame-alist '(fringe-style . '(2 . 2)))
 (set-fringe-style '(2 . 2))
@@ -120,7 +120,7 @@
 
 (add-to-list 'custom-theme-load-path
              (expand-file-name "~/.emacs.d/themes"))
-(load-theme 'solarized-dark)
+(load-theme 'reykjavik)
 
 (setq-default fill-column 80)
 
@@ -264,7 +264,7 @@ globally.
 An example invocation is shown below.  The following will bind a
 new function named `lisp-end-of-list' to the keychord C-M-\; in
 all the modes whose hooks are contained in the variable
-`lisp-mode-common-hooks' .
+`lisp-mode-common-hooks'.
 
 \(defbind lisp-end-of-list nil \('\(\"C-M-\;\"\)
                                 lisp-mode-common-hooks\)
@@ -451,6 +451,7 @@ quotes, please!\n")))
 (bind "C-*"       'dabbrev-expand)
 (bind "s-k"       'bury-buffer)
 (bind "C-x C-b"   'helm-buffers-list)
+(bind "M-/"       'hippie-expand)
 
 (require 'iy-go-to-char)
 (require 'iedit)
@@ -515,10 +516,6 @@ quotes, please!\n")))
       (progn (backward-delete-char-untabify 1)))))
 
 (setq iy-go-to-char-continue-when-repeating nil)
-(defbind fast-fix-typo (char) ('("M-/"))
-  (interactive "cGo back to char: ")
-  (iy-go-to-char-backward 1 char)
-  (forward-char))
 
 (defbind make-line-below-and-go-to-it (times) ('("C-M-o"))
   (interactive "p")
@@ -586,6 +583,9 @@ quotes, please!\n")))
              '(slime-documentation describe-function slime-describe-symbol describe-variable))))
 
 (require 'yasnippet)
+(setq yas/keymap (make-sparse-keymap))
+(define-key yas/keymap (kbd "RET") 'yas/next-field-group)
+(define-key yas/keymap (kbd "M-RET") 'yas/prev-field-group)
 (setq-default yas-snippet-dirs
               (list (expand-file-name "~/prj/dotfiles/emacs/snippets/")))
 (yas-global-mode nil)
@@ -637,6 +637,7 @@ quotes, please!\n")))
   :next-checkers ((warning . c/c++-cppcheck)))
 (add-to-list 'flycheck-checkers 'c/c++-avr-gcc)
 
+;;; Don't use this instead of the normal GCC checker, etc.
 (add-hook 'c-mode-common-hook #'flycheck-mode)
 
 (put 'flycheck-gcc-args 'safe-local-variable (lambda (&rest args) t))
@@ -654,7 +655,7 @@ quotes, please!\n")))
           (lambda () (setq flycheck-gcc-language-standard "c11")))
 
 (defvar flycheck-disabled-checkers nil)
-(setq-default flycheck-disabled-checkers '(c/c++-clang))
+(setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-avr-gcc))
 (add-to-list 'flycheck-disabled-checkers 'c/c++-clang)
 
 (defvar preserve-tabs-major-modes
@@ -673,19 +674,6 @@ one of the modes specified in the variable
   (delete-trailing-whitespace)
   (set-buffer-file-coding-system 'utf-8))
 (add-hook 'before-save-hook 'cleanup-buffer)
-
-(defun yas-expand-all-on-line nil
-  "For each token on the line, try to expand it.
-For modes which define keyword shortcuts, this will let us chain
-abbreviations and then expand them all at once."
-  (interactive)
-  (save-excursion
-    (end-of-line)
-    (back-to-indentation)
-    (while (<= (point) (line-end-position))
-      (forward-word)
-      (cl-flet ((yas--fallback 'ignore))
-        (yas-expand-from-trigger-key)))))
 
 (defadvice open-line (after indent)
   (save-excursion
