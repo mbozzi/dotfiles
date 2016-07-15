@@ -77,9 +77,9 @@
                         helm iy-go-to-char iedit org
                         pretty-lambdada slime yasnippet flycheck tramp
                         solarized-theme reykjavik-theme paredit))
-(setq package-archives  '(("melpa" . "http://melpa.milkbox.net/packages/")
-                          ("gnu"   . "http://elpa.gnu.org/packages/")
-                          ("elpa" . "http://tromey.com/elpa/")
+(setq package-archives  '(("melpa"     . "http://melpa.milkbox.net/packages/")
+                          ("gnu"       . "http://elpa.gnu.org/packages/")
+                          ("elpa"      . "http://tromey.com/elpa/")
                           ("marmalade" . "http://marmalade-repo.org/packages/")))
 
 (package-initialize)
@@ -106,7 +106,7 @@
 (setq custom-file customization-file-path)
 
 ;;; (add-to-list 'default-frame-alist '(fullscreen   . maximized))
-;;; (add-to-list 'default-frame-alist '(alpha        . 84))
+(add-to-list 'default-frame-alist '(alpha        . 92))
 (add-to-list 'default-frame-alist '(font         . "clean"))
 (add-to-list 'default-frame-alist '(fringe-style . '(2 . 2)))
 (set-fringe-style '(2 . 2))
@@ -120,7 +120,7 @@
 
 (add-to-list 'custom-theme-load-path
              (expand-file-name "~/.emacs.d/themes"))
-(load-theme 'reykjavik)
+(load-theme 'solarized-light)
 
 (setq-default fill-column 80)
 
@@ -411,7 +411,18 @@ quotes, please!\n")))
    (end-of-line)
    (open-line n-times)))
 
+(defbind move-beginning-of-line-dwim (arg) ('("C-a"))
+  "Move point to the first non-whitespace character, by invoking
+  `back-to-indentation'.  If point is already on the first
+  non-whitespace character, then move to the beginning of the
+  line.
 
+Prefix argument ARG moves N lines ahead (or backward if ARG is
+negative) before proceeding, as is the default behavior of
+`move-beginning-of-line'."
+  (interactive "p")
+  (if (= (point) (progn (back-to-indentation) (point)))
+      (beginning-of-line)))
 
 (setq tags-revert-without-query t)
 
@@ -462,7 +473,10 @@ quotes, please!\n")))
 (bind "C-'"      'ff-find-other-file) (setq-default ff-always-in-other-window t)
 (bind "C-x C-d"  'dired)
 (bind "<f5>"     'compile)
-;;; Change the default compile command to look in the parent directory.
+(bind "M-n"      'up-list)
+
+;;; Change the default compile command to look in the parent directory.  Maybe
+;;; test to see if there is a makefile in `./', else do the current.
 (setq compile-command "pushd .. && make -kj2 ")
 
 (bind "s-p"     'pop-to-mark-command)
@@ -475,6 +489,9 @@ quotes, please!\n")))
 (require 'dired)
 (bind "C-c C-w" 'wdired-change-to-wdired-mode 'dired-mode-hook)
 (bind "C-s"     'dired-isearch-filenames-regexp 'dired-mode-hook)
+
+;;; This is mark-page.  I don't want it.
+(global-unset-key (kbd "C-x C-p"))
 
 (mapc (lambda (hook)
         (add-hook hook #'enable-paredit-mode))
@@ -784,6 +801,8 @@ one of the modes specified in the variable
      (up-list) (down-list-or-next arg))))
 
 (define-key global-map [remap down-list] 'down-list-or-next)
+
+(defalias 'spacify 'untabify)
 
 (provide '.emacs)
 ;;; .emacs ends here
