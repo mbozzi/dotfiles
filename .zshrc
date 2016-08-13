@@ -16,8 +16,7 @@ unsetopt beep
 # Emacs-like keybindings are appreciated.
 bindkey -e
 
-PS1='\[\e[36m\]\u\[\e[39m\]@\[\e[30;1m\]\h \[\e[36;49m\]\W\[\e[0m\]\$ \[\e[0m\]'
-
+PS1="$(tput setaf 6)\u@$(tput setaf 7)\h \W$ $(tput setaf 12)"
 export LC_ALL="C"
 export XDG_CONFIG_HOME=$HOME/.config
 export EDITOR=emacs
