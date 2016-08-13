@@ -120,7 +120,7 @@
 
 (add-to-list 'custom-theme-load-path
              (expand-file-name "~/.emacs.d/themes"))
-(load-theme 'solarized-light)
+(load-theme 'solarized-dark)
 
 (setq-default fill-column 80)
 
