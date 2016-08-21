@@ -106,7 +106,7 @@
 (setq custom-file customization-file-path)
 
 ;;; (add-to-list 'default-frame-alist '(fullscreen   . maximized))
-(add-to-list 'default-frame-alist '(alpha        . 92))
+;;; (add-to-list 'default-frame-alist '(alpha        . 92))
 (add-to-list 'default-frame-alist '(font         . "clean"))
 (add-to-list 'default-frame-alist '(fringe-style . '(2 . 2)))
 (set-fringe-style '(2 . 2))

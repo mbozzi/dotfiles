@@ -26,6 +26,7 @@ export XAUTHORITY=~/prj/dotfiles/.Xauthority
 export GNUPGHOME=~/prj/dotfiles/gnupg
 export GIMP2_DIRECTORY=~/prj/dotfiles/gimp-2.8
 export PYTHONSTARTUP=~/prj/dotfiles/python/.pythonrc
+export PATH=$PATH:.
 
 # Some aliases:
 alias cim='vim'
@@ -38,7 +39,7 @@ alias ...='cd ../..'
 alias ....='cd ../../..'
 alias pacman='sudo pacman' # because I always forget
 alias g='git' # Because those two extra characters are a bitch.
-alias cse-server="mbozzi@129.252.130.182"
+alias -g cse-server="mbozzi@129.252.130.182"
 alias login-to-cse-server="ssh -p 222 mbozzi@129.252.130.182"
 
 # Shortcuts:
