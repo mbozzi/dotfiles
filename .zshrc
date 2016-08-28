@@ -29,6 +29,8 @@ export PYTHONSTARTUP=~/prj/dotfiles/python/.pythonrc
 export PATH=$PATH:.
 
 # Some aliases:
+alias ping='ping -c1'
+alias ping-google='ping -c1 8.8.8.8'
 alias cim='vim'
 alias ec='emacsclient'
 alias ls='ls --color=auto'

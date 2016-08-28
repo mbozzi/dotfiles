@@ -600,9 +600,6 @@ negative) before proceeding, as is the default behavior of
              '(slime-documentation describe-function slime-describe-symbol describe-variable))))
 
 (require 'yasnippet)
-(setq yas/keymap (make-sparse-keymap))
-(define-key yas/keymap (kbd "RET") 'yas/next-field-group)
-(define-key yas/keymap (kbd "M-RET") 'yas/prev-field-group)
 (setq-default yas-snippet-dirs
               (list (expand-file-name "~/prj/dotfiles/emacs/snippets/")))
 (yas-global-mode nil)
@@ -750,10 +747,12 @@ one of the modes specified in the variable
 (defun project-name-or-guess ()
   (if (and (boundp 'project-name) (stringp project-name))
       project-name
-    (file-name-base
-     (replace-regexp-in-string ".*/\\(.+?\\)/?\\.?$" "\\1"
-                               (expand-file-name
-                                (concat default-directory "../"))))))
+    (capitalize
+     (file-name-base
+      (replace-regexp-in-string
+       ".*/\\(.+?\\)/?\\.?$" "\\1"
+       (expand-file-name
+        (concat default-directory "../")))))))
 
 ;;; Beaufort
 (setq calendar-latitude   32.4316)

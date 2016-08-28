@@ -1,10 +1,10 @@
 # key: header-file
 # name: header-file
-# expand-env: ((file-extension (c-macroify-string (aif (buffer-file-name) (file-name-extension it) h))) (ad-hoc-project-name (project-name-or-guess)))# key: header-file
-# name: header-file
-# expand-env: ((file-extension (c-macroify-string (aif (buffer-file-name) (file-name-extension it) h))) (ad-hoc-project-name (project-name-or-guess)))
+# expand-env: ((file-extension (c-macroify-string (aif (buffer-file-name) (file-name-extension it) "h"))) (ad-hoc-project-name (project-name-or-guess)))
 # --
-/* This file is a part of ${1:`ad-hoc-project-name`}. */
+/* This file is a part of ${1:`ad-hoc-project-name`}.
+ * Copyright (C) 2016, Max Bozzi
+ */
 
 /* $1 is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
