@@ -1,7 +1,7 @@
 # ZSH profile.
 
-if [ -f ~/.zprofile ]
-   source ~/.zprofile
+if [ -f ~/.zprofile ]; then
+   source ~/.zshrc
 fi
 
 # Start X at login.

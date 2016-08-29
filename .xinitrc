@@ -44,7 +44,7 @@ fi
 # Stop blinding me at night:
 # It turns out that 31.0N, 81.0W is almost exactly outside my building
 # in Columbia.
-redshift -l31.0:81.0 &
+# redshift -l31.0:81.0 &
 
 # Start the compositor:
 xcompmgr -C &
