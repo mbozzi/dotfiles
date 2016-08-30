@@ -83,7 +83,7 @@ URxvt*font:             xft:Clean:size=10
 URxvt*depth:            32
 
 !! Solarized dark background
-!  URxvt*background:       rgba:0000/2b00/3600/eb00
+!  URxvt*background:       rgba:0000/2b00/3600/ff00
 
 !! Solarized light background
-URxvt*background:       rgba:fd00/f600/e300/eb00
+URxvt*background:       rgba:fd00/f600/e300/ff00
