@@ -7,3 +7,9 @@
 /.cache
 gimp2.8/*rc
 /emacs/snippets/text-mode/.yas-compiled-snippets.el
+/gimp-2.8/tool-options/gimp-colorize-tool.settings
+/emacs/snippets/c++-mode/include.yasnippet
+/emacs/snippets/text-mode/env.yasnippet
+/gimp-2.8/tool-options/gimp-color-balance-tool.settings
+/gimp-2.8/tool-options/gimp-hue-saturation-tool.settings
+emacs/flycheck_init.el
