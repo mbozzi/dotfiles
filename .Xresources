@@ -29,31 +29,31 @@
 
 
 ! Dark
-
-! #define S_base03        #002b36
-! #define S_base02        #073642
-! #define S_base01        #586e75
-! #define S_base00        #657b83
-! #define S_base0         #839496
-! #define S_base1         #93a1a1
-! #define S_base2         #eee8d5
-! #define S_base3         #fdf6e3
-
+# if defined USE_SOLARIZED_DARK_THEME
+#   define S_base03        #002b36
+#   define S_base02        #073642
+#   define S_base01        #586e75
+#   define S_base00        #657b83
+#   define S_base0         #839496
+#   define S_base1         #93a1a1
+#   define S_base2         #eee8d5
+#   define S_base3         #fdf6e3
+# else
 ! Light
-
-#define S_base03        #fdf6e3
-#define S_base02        #eee8d5
-#define S_base01        #93a1a1
-#define S_base00        #839496
-#define S_base0         #657b83
-#define S_base1         #586e75
-#define S_base2         #073642
-#define S_base3         #002b36
+#   define S_base03        #fdf6e3
+#   define S_base02        #eee8d5
+#   define S_base01        #93a1a1
+#   define S_base00        #839496
+#   define S_base0         #657b83
+#   define S_base1         #586e75
+#   define S_base2         #073642
+#   define S_base3         #002b36
+# endif
 
 *background:              S_base03
 *foreground:              S_base0
-*fading:                  40
-*fadeColor:               S_base03
+*fading:                  5
+*fading_color:            S_base03
 *cursorColor:             S_base1
 *pointerColorBackground:  S_base01
 *pointerColorForeground:  S_base1
@@ -82,8 +82,8 @@ URxvt*font:             xft:Clean:size=10
 
 URxvt*depth:            32
 
-!! Solarized dark background
-!  URxvt*background:       rgba:0000/2b00/3600/ff00
-
-!! Solarized light background
+# if defined USE_SOLARIZED_DARK_THEME
+URxvt*background:       rgba:0000/2b00/3600/ff00
+# else
 URxvt*background:       rgba:fd00/f600/e300/ff00
+# endif

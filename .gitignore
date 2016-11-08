@@ -5,3 +5,5 @@
 /.zcompdump-mbozzi-arch-5.2
 /.zdirs
 /.cache
+gimp2.8/*rc
+/emacs/snippets/text-mode/.yas-compiled-snippets.el

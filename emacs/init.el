@@ -55,6 +55,8 @@
 (transient-mark-mode nil)
 (global-hl-line-mode)
 
+(setq inhibit-splash-screen t)
+
 (display-time)
 
 (show-paren-mode  t)
@@ -76,7 +78,7 @@
 (setq package-list '(cl package key-chord ace-jump-mode
                         helm iy-go-to-char iedit org
                         pretty-lambdada slime yasnippet flycheck tramp
-                        solarized-theme reykjavik-theme paredit))
+                        solarized-theme reykjavik-theme paredit string-inflection))
 (setq package-archives  '(("melpa"     . "http://melpa.milkbox.net/packages/")
                           ("gnu"       . "http://elpa.gnu.org/packages/")
                           ("elpa"      . "http://tromey.com/elpa/")
@@ -105,14 +107,11 @@
   (load customization-file-path))
 (setq custom-file customization-file-path)
 
-;;; (add-to-list 'default-frame-alist '(fullscreen   . maximized))
-;;; (add-to-list 'default-frame-alist '(alpha        . 92))
 (add-to-list 'default-frame-alist '(font         . "clean"))
 (add-to-list 'default-frame-alist '(fringe-style . '(2 . 2)))
 (set-fringe-style '(2 . 2))
 
 (defun switch-theme-exclusive (theme)
-  (interactive)
   (mapc (lambda (theme)
           (disable-theme theme))
         custom-enabled-themes)
@@ -120,13 +119,13 @@
 
 (add-to-list 'custom-theme-load-path
              (expand-file-name "~/.emacs.d/themes"))
-(load-theme 'solarized-dark)
+(switch-theme-exclusive 'solarized-light)
 
 (setq-default fill-column 80)
 
 (defmacro alambda (args &rest body)
   "Anaphoric lambda binding `self' to itself for recursion."
-  `(labels ((self ,args ,@body))
+  `(cl-labels ((self ,args ,@body))
      #'self))
 
 (defmacro aif (condition do-if-true &rest do-if-false)
@@ -234,13 +233,12 @@ otherwise, throws an error."
   `(dolist ,(list (value-if
                       (car vars) t (gensym "dummy-iterator"))
                   (car lists))
-     ,(if (null (cdr lists))
-          `(progn ,@body)
-        `(nested-dolist
+     ,(if (cdr lists)
+          `(nested-dolist
              ,(cdr vars)
              ,(cdr lists)
-           ,@body))))
-
+           ,@body)
+        `(progn ,@body))))
 
 (defmacro defbind (name args bind-specs &rest body)
   "Define a function with NAME, ARGS, BODY, with BIND-SPECS.
@@ -283,6 +281,14 @@ all the modes whose hooks are contained in the variable
                                            ''(())))
        (bind key #',name hook))))
 
+(defmacro unset-kbd (&rest keys)
+  "Create a lambda which locally unbinds each of it's arguments.
+
+Each of KEYS is passed to `kbd'; use the plain string
+representation."
+  `(lambda nil ,@(cl-loop for elem in keys
+                     collect (list 'local-unset-key (kbd elem)))))
+
 (define-key function-key-map    [tab] nil)
 (define-key key-translation-map [9] [tab])
 (define-key key-translation-map [tab] [9])
@@ -290,33 +296,18 @@ all the modes whose hooks are contained in the variable
 ;; Start-up quotes
 (let ((message-file (expand-file-name
                      "~/prj/dotfiles/emacs/start-up-quotes.el")))
-  (if (file-readable-p message-file)
-      (let ((number-forms 0))
-        (with-temp-buffer
-          (insert-file-contents message-file)
-          (ignore-errors
-            (while (incf number-forms)
-              (read (current-buffer)))))
-        (with-temp-buffer
-          (insert-file-contents message-file)
-          (setq initial-scratch-message
-                (concat
-                 (dotimes (i (random (1- number-forms))
-                             (read (current-buffer)))
-                   (read (current-buffer)))
-                 "\n"))))
-    (setq initial-scratch-message
+  (setq initial-scratch-message
+        (if (file-readable-p message-file)
+            (with-temp-buffer
+              (insert-file-contents message-file)
+              (let* ((messages (read   (current-buffer)))
+                     (length   (length messages)))
+                (nth (random length) messages)))
           "You suck.  This is the default message.  Copy down some \
 quotes, please!\n")))
 
 (defun inside-comment-p nil (nth 4 (syntax-ppss)))
 (defun inside-string-p nil (nth 3 (syntax-ppss)))
-(defun smarter-newline (arg) (interactive "p")
-       (if (inside-comment-p)
-           (c-indent-new-comment-line)
-         (newline arg)))
-
-(setq inhibit-splash-screen t)
 
 (require 'dired)
 (require 'wdired)
@@ -424,7 +415,50 @@ negative) before proceeding, as is the default behavior of
   (if (= (point) (progn (back-to-indentation) (point)))
       (beginning-of-line)))
 
+(defvar my:is-emacs-readable nil)
+(defun make-emacs-readable ()
+  "Cater to the plebians looking over your shoulder.
+Bump up the font size hugely and switch the color theme to
+Solarized.  Make the editor readable for people looking over your
+shoulder, and fullscreen it, so they're not distracted by other
+irrelevant crap.  "
+  (interactive)
+  (set-frame-font
+   "-ADBO-Source Code Pro-semibold-normal-normal-*-14-*-*-*-m-0-iso10646-1")
+  (toggle-frame-fullscreen)
+  (setq my:is-emacs-readable t))
+
+(defun make-emacs-unreadable ()
+  "Shrink down the font size hugely, and switch the color theme.
+Fit lots of code on the screen, so you can work.  Make the editor
+efficient for you --- instead of catering to the plebians looking
+over your shoulder.  ;)"
+  (interactive)
+  (set-frame-font "clean-10")
+  (setq my:is-emacs-readable nil))
+
+(defbind toggle-emacs-readable () ('("C-c & C-r"))
+  (interactive)
+  (if my:is-emacs-readable
+      (make-emacs-unreadable)
+    (make-emacs-readable)))
+
+(defvar my:dark-theme  'solarized-dark)
+(defvar my:light-theme 'solarized-light)
+(defbind toggle-dark-light-theme () ('("C-c & C-t"))
+  (interactive)
+  (if (member my:dark-theme custom-enabled-themes)
+      (switch-theme-exclusive my:light-theme)
+    (switch-theme-exclusive my:dark-theme)))
+
 (setq tags-revert-without-query t)
+
+(defbind edit-emacs-init-file () ('("C-c & C-e"))
+  ;; Did you know you can open files as a different user by writing
+  ;; /sudo::FILENAME ? too fancy, and good to know.
+  (interactive)
+  (find-file (concat (getenv "HOME")
+                     "/.emacs.d/init.el")))
 
 ;; (defbind dired-jump-to-bottom () ('("M->")
 ;;                                   '(dired-mode-hook))
@@ -440,6 +474,8 @@ negative) before proceeding, as is the default behavior of
 
 (require 'helm-config)
 (helm-mode 1)
+
+(setq helm-follow-mode-persistent t)
 
 (bind "M-x" 'helm-M-x)
 (bind "C-x C-f" 'helm-find-files)
@@ -461,20 +497,23 @@ negative) before proceeding, as is the default behavior of
 (bind "C-s"       'helm-occur)
 (bind "C-*"       'dabbrev-expand)
 (bind "s-k"       'bury-buffer)
-(bind "C-x C-b"   'helm-buffers-list)
+(bind "C-c C-d"   'helm-mini)
+(bind "<f10>"     'helm-mini)
 (bind "M-/"       'hippie-expand)
+(bind "C-#"       'er/expand-region)
+
 
 (require 'iy-go-to-char)
 (require 'iedit)
 
-(bind "C-,"      'other-window)
-(bind "C-x g"    'magit-status)
-(bind "jf"       'ace-jump-mode)
-(bind "C-'"      'ff-find-other-file) (setq-default ff-always-in-other-window t)
-(bind "C-x C-d"  'dired)
-(bind "<f5>"     'compile)
-(bind "M-n"      'up-list)
-
+(bind "C-,"       'other-window)
+(bind "C-x g"     'magit-status)
+(bind "jf"        'ace-jump-mode)
+(bind "C-'"       'ff-find-other-file) (setq-default ff-always-in-other-window t)
+(bind "C-x C-d"   'dired)
+(bind "<f5>"      'compile)
+(bind "M-n"       'up-list)
+(bind "C-c & C-a" 'org-agenda)
 ;;; Change the default compile command to look in the parent directory.  Maybe
 ;;; test to see if there is a makefile in `./', else do the current.
 (setq compile-command "pushd .. && make -kj2 ")
@@ -498,8 +537,14 @@ negative) before proceeding, as is the default behavior of
       lisp-mode-common-hooks)
 
 (require 'org)
+(add-hook 'org-mode-hook (lambda nil (auto-fill-mode)))
 (add-hook 'org-mode-hook
           (lambda nil (local-unset-key (kbd "C-,"))))
+(add-hook 'org-mode-hook
+          (lambda nil (local-unset-key (kbd "C-c C-r"))))
+
+(add-hook 'c++-mode-hook (unset-kbd "C-c C-d"))
+
 ;;; Don't scale headings.
 (custom-set-faces
   '(org-level-1 ((t (:inherit outline-1 :height 1.0))))
@@ -537,7 +582,7 @@ negative) before proceeding, as is the default behavior of
 (defbind make-line-below-and-go-to-it (times) ('("C-M-o"))
   (interactive "p")
   (lower-next-line times)
-  (next-line times)
+  (forward-line times)
   (indent-for-tab-command))
 
 (defbind insert-std::-c++ nil ('("C-M-;") '(c++-mode-hook))
@@ -589,11 +634,11 @@ negative) before proceeding, as is the default behavior of
     (defvar inferior-lisp-program)
     (setq inferior-lisp-program *my-common-lisp-interpreter*)
 
-    (let ((quicklisp (expand-file-name "~/quicklisp/slime-helper.el")))
+    (let ((quicklisp (expand-file-name "~/prj/quicklisp/slime-helper.el")))
       (if (file-readable-p quicklisp)
           (load quicklisp)
-        (message "Can't find QuickLisp at %S." quicklisp)))
-
+        (message "Can't find Slime-Helper at %S." quicklisp)))
+    (slime-setup '(slime-fancy))
     (mapcar* (lambda (key function)
                (bind key function 'slime-mode-hook))
              '("C-h f" "C-h M-f" "C-h v" "C-h M-v")
@@ -602,15 +647,19 @@ negative) before proceeding, as is the default behavior of
 (require 'yasnippet)
 (setq-default yas-snippet-dirs
               (list (expand-file-name "~/prj/dotfiles/emacs/snippets/")))
+
+(setq yas-prompt-functions '(yas-completing-prompt yas-ido-prompt yas-no-prompt))
 (yas-global-mode nil)
 
 (setq font-latex-fontify-sectioning 'color)
 (add-hook 'LaTeX-mode-hook (lambda nil (auto-fill-mode)))
+(add-hook 'latex-mode-hook (lambda nil (auto-fill-mode)))
+(bind "<f5>" 'TeX-command-master 'latex-mode-hook)
+(bind "<f5>" 'TeX-command-master 'LaTeX-mode-hook)
 
 (require 'flycheck)
-
 ;;; This is largely copied from flycheck.el, because the path to the tool is
-;;; hard-coded.
+;;; hard-coded.  What bullshit.
 (flycheck-define-checker c/c++-avr-gcc
   "Check C/C++ using avr-gcc and the built-in code."
   :command ("avr-gcc" "-fshow-column"
@@ -691,7 +740,7 @@ one of the modes specified in the variable
 
 (defadvice open-line (after indent)
   (save-excursion
-    (next-line)
+    (forward-line)
     (indent-for-tab-command))
   (indent-for-tab-command))
 (ad-activate 'open-line t)
@@ -767,30 +816,6 @@ one of the modes specified in the variable
          (sunset-time          (apply 'solar-time-string
                                       (cadr local-sunrise-sunset))))
     (list sunrise-time sunset-time)))
-
-(defun do-at-sunrise (function &rest args)
-  (let ((sunrise-time (car (sunrise-sunset-time-today))))
-    (run-at-time sunrise-time nil function args)))
-
-(defun do-at-sunset (function &rest args)
-  (let ((sunset-time (cadr (sunrise-sunset-time-today))))
-    (run-at-time sunset-time nil function args)))
-
-(defun do-every-sunrise (function &rest args)
-  (run-at-time nil (* 60 60 24) 'do-at-sunrise function args))
-
-(defun do-every-sunset (function &rest args)
-  (run-at-time nil (* 60 60 24) 'do-at-sunset function args))
-
-;;;  This is a bit broken at the moment.
-;; (do-every-sunrise
-;;  (lambda (&rest ignored)
-;;    (message "switching to light theme on sunrise timer.")
-;;    (switch-theme-exclusive 'solarized-light)))
-;; (do-every-sunset
-;;  (lambda (&rest ignored)
-;;    (message "switching to dark theme on sunset timer.")
-;;    (switch-theme-exclusive 'solarized-dark)))
 
 (defun down-list-or-next (arg)
   (interactive "p")

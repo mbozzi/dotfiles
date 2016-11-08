@@ -43,6 +43,26 @@ alias pacman='sudo pacman' # because I always forget
 alias g='git' # Because those two extra characters are a bitch.
 alias -g cse-server="mbozzi@129.252.130.182"
 alias login-to-cse-server="ssh -p 222 mbozzi@129.252.130.182"
+alias ffile='find . ! -readable -prune -o -name'
+
+runscripts() {
+    TESTDIR=$(echo $(pwd | grep -Eo '.*testdirectory')/)
+    if [ -d "$TESTDIR" ] ; then
+        cd "$TESTDIR"
+    fi
+
+    chmod +x "zaZipUpScript.txt"  "zbFileCopyScript.txt"
+    chmod +x "zcCompileScript.txt" "zdExecuteScript.txt"
+
+    ./zaZipUpScript.txt
+    ./zbFileCopyScript.txt
+    ./zcCompileScript.txt
+    ./zdExecuteScript.txt
+
+    if [ -d "$TESTDIR" ] ; then
+        cd -
+    fi
+}
 
 # Shortcuts:
 mkcd() { # Make a directory and change to it.
