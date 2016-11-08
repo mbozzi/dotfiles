@@ -2,11 +2,10 @@
 ;;; Snippet definitions:
 ;;;
 (yas-define-snippets 'java-mode
-		     '(("class" "class ${1:Name} {\npublic:\n      $0\n};" "class" nil nil nil nil "direct-keybinding" nil)
+		     '(("class" "${1:public} class ${2:`(aif (buffer-file-name (current-buffer)) (string-inflection-camelcase-function (file-name-base it)) \"Name\")`$(string-inflection-camelcase-function (yas-text))} {\n      $0\n}\n" "class" nil nil nil nil nil nil)
 		       ("cm" "/* $0 */" "comment" nil nil nil nil "direct-keybinding" nil)
 		       ("doc" "/**\n * $0\n */" "documentation-comment" nil nil nil nil "direct-keybinding" nil)
 		       ("for" "for (${1:int i = 0}; ${2:i < foo}; ${3:i ++}) {\n    $0\n}" "for" nil nil nil nil "direct-keybinding" nil)
-		       ("header" "/*\n * CSCE 146 Section 005, University Of South Carolina.\n * Lab 0: Mine Counter.\n *\n * Copyright (C) 2016 Max Bozzi\n * Friday, August 19, 2016.\n */" "header-line" nil nil nil nil "direct-keybinding" nil)
 		       ("header" "/* Copyright (C) 2016 Max Bozzi\n * Author: Max Bozzi\n * Date: `(calendar-date-string (calendar-current-date))`\n */" "header" nil nil nil nil "direct-keybinding" nil)
 		       ("br" "break" "break" nil nil nil nil "direct-keybinding" nil)
 		       ("c" "char" "char" nil nil nil nil "direct-keybinding" nil)
@@ -29,4 +28,4 @@
 		       ("sdoc" "/** $0 */" "short-documentation-string" nil nil nil nil "direct-keybinding" nil)))
 
 
-;;; Do not edit! File generated at Fri Aug 26 12:22:25 2016
+;;; Do not edit! File generated at Mon Nov  7 00:45:05 2016

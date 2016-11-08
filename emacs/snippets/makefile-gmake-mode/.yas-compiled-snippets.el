@@ -7,4 +7,4 @@
 		       ("var" "$(${1:VAR$(replace-regexp-in-string \" \" \"_\" (upcase yas-text))})" "var" nil nil nil nil "direct-keybinding" nil)))
 
 
-;;; Do not edit! File generated at Fri Aug 26 12:22:26 2016
+;;; Do not edit! File generated at Mon Nov  7 00:45:05 2016

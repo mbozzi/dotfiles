@@ -1,9 +1,6 @@
-# -*- mode: snippet -*-
 # name: class
 # key: class
-# binding: direct-keybinding
 # --
-class ${1:Name} {
-public:
+${1:$$(yas-choose-value '("public" "private"))public} class ${2:`(aif (buffer-file-name (current-buffer)) (string-inflection-camelcase-function (file-name-base it)) "Name")`$(aif (yas-text) (if (string-inflection-upcase-p it) it (string-inflection-camelcase-function it)) "")} {
       $0
-};
+}

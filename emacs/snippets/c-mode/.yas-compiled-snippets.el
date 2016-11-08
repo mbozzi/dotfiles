@@ -21,7 +21,7 @@
 			  (project-name-or-guess)))
 			nil "direct-keybinding" nil)
 		       ("#\"" "# include \"$1\"$0\n" "include-system" nil nil nil nil "direct-keybinding" nil)
-		       ("#<" "# include <$1>\n$0" "include-system" nil nil nil nil nil nil)
+		       ("inc" "# include <$1>\n$0\n" "include-system" nil nil nil nil nil nil)
 		       ("br" "break" "break" nil nil nil nil "direct-keybinding" nil)
 		       ("c" "char" "char" nil nil nil nil "direct-keybinding" nil)
 		       ("cs" "const" "const" nil nil nil nil "direct-keybinding" nil)
@@ -50,9 +50,9 @@
 		       ("us" "unsigned" "unsigned" nil nil nil nil "direct-keybinding" nil)
 		       ("v" "void" "void" nil nil nil nil "direct-keybinding" nil)
 		       ("vl" "volatile" "volatile" nil nil nil nil "direct-keybinding" nil)
-		       ("wh" "while" "while" nil nil nil nil "direct-keybinding" nil)
+		       ("wh" "while (${1:true}) {\n      $0\n}" "while" nil nil nil nil "direct-keybinding" nil)
 		       ("main" "int main (int argc,\n    char ** argv) {\n    $0;\n    return 0;\n}" "main-function" nil nil nil nil "direct-keybinding" nil)
 		       ("str" "typedef struct _tag_${1:name} {\n       $0\n} $1;" "struct" nil nil nil nil nil nil)))
 
 
-;;; Do not edit! File generated at Fri Aug 26 12:22:25 2016
+;;; Do not edit! File generated at Mon Nov  7 00:45:05 2016

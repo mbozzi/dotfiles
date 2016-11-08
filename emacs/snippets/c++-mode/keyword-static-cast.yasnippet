@@ -1,8 +1,7 @@
 # -*- mode: snippet -*-
 # name: keyword-static-cast
 # key: sc
-# expand-env: ((yas-wrap-around-region t))
 # binding: direct-keybinding
 # type: snippet
 # --
-static_cast <${1:NewType}> ($0)
+static_cast <${1:NewType}> (`yas-selected-text`$0)
