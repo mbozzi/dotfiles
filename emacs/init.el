@@ -34,7 +34,7 @@
 ;;; function keys back, and replaced the "windows key" (immediately left of
 ;;; Left-Alt) with a Super key.  I have switched each top-row number key (I
 ;;; don't have a numeric keypad) with each corresponding symbol, so that I don't
-;;; type the Shift key to get !@#$%^&*(). The same has been done for
+;;; type the Shift key to get !@#$%^&*().  The same has been done for
 ;;; the brace and bracket keys ({} and []).
 ;;;
 ;;; I do not use Emacs from the terminal.  If you try to use this configuration
@@ -76,7 +76,7 @@
 ;;; Enable MELPA and GNU/ELPA repositories.
 (require 'package)
 (setq package-list '(cl package key-chord ace-jump-mode
-                        helm iy-go-to-char iedit org
+                        helm iedit org
                         pretty-lambdada slime yasnippet flycheck tramp
                         solarized-theme reykjavik-theme paredit string-inflection))
 (setq package-archives  '(("melpa"     . "http://melpa.milkbox.net/packages/")
@@ -107,9 +107,12 @@
   (load customization-file-path))
 (setq custom-file customization-file-path)
 
-(add-to-list 'default-frame-alist '(font         . "clean"))
+(add-to-list 'default-frame-alist '(alpha        . 88))
+(add-to-list
+ 'default-frame-alist
+ '(font . "-Misc-Tamsyn-normal-normal-normal-*-14-*-*-*-c-70-iso10646-1"))
 (add-to-list 'default-frame-alist '(fringe-style . '(2 . 2)))
-(set-fringe-style '(2 . 2))
+(set-fringe-style 0)
 
 (defun switch-theme-exclusive (theme)
   (mapc (lambda (theme)
@@ -117,9 +120,13 @@
         custom-enabled-themes)
   (load-theme theme t))
 
+;;; This will load, among other things, the theme which we had loaded.  We don't
+;;; want to load both.
+(desktop-save-mode 1)
+
 (add-to-list 'custom-theme-load-path
              (expand-file-name "~/.emacs.d/themes"))
-(switch-theme-exclusive 'solarized-light)
+(switch-theme-exclusive 'foggy-night-modified)
 
 (setq-default fill-column 80)
 
@@ -135,7 +142,7 @@ CONDITION."
      (if it ,do-if-true ,@do-if-false)))
 
 (defun flatten (list)
-  "Return a list of all the leaves of LIST as a tree."
+  "Return a list of all the leafs of LIST as a tree."
   (funcall (alambda (l acc)
              (cond ((null l) ())
                    ((atom l) (cons l acc))
@@ -477,8 +484,8 @@ over your shoulder.  ;)"
 
 (setq helm-follow-mode-persistent t)
 
-(bind "M-x" 'helm-M-x)
-(bind "C-x C-f" 'helm-find-files)
+(bind "M-x"       'helm-M-x)
+(bind "C-x C-f"   'helm-find-files)
 
 (bind "M-y"       'yank-pop)
 (bind "C-x C-f"   'helm-find-files)
@@ -488,22 +495,20 @@ over your shoulder.  ;)"
 (bind "C-:"       'helm-eval-expression-with-eldoc)
 (bind "C-h i"     'helm-info-at-point)
 (bind "<f9>"      'helm-register)
-(bind "C-x C-d"   'helm-browse-project)
 (bind "<f1>"      'helm-resume)
 (bind "C-h C-f"   'helm-apropos)
 (bind "C-h a"     'helm-apropos)
 (bind "<f2>"      'helm-execute-kmacro)
 (bind "C-c i"     'helm-imenu-in-all-buffers)
+
 (bind "C-s"       'helm-occur)
 (bind "C-*"       'dabbrev-expand)
 (bind "s-k"       'bury-buffer)
 (bind "C-c C-d"   'helm-mini)
 (bind "<f10>"     'helm-mini)
-(bind "M-/"       'hippie-expand)
 (bind "C-#"       'er/expand-region)
 
 
-(require 'iy-go-to-char)
 (require 'iedit)
 
 (bind "C-,"       'other-window)
@@ -514,6 +519,7 @@ over your shoulder.  ;)"
 (bind "<f5>"      'compile)
 (bind "M-n"       'up-list)
 (bind "C-c & C-a" 'org-agenda)
+
 ;;; Change the default compile command to look in the parent directory.  Maybe
 ;;; test to see if there is a makefile in `./', else do the current.
 (setq compile-command "pushd .. && make -kj2 ")
@@ -528,6 +534,33 @@ over your shoulder.  ;)"
 (require 'dired)
 (bind "C-c C-w" 'wdired-change-to-wdired-mode 'dired-mode-hook)
 (bind "C-s"     'dired-isearch-filenames-regexp 'dired-mode-hook)
+(bind "M-i"     'dired-up-directory 'dired-mode-hook)
+
+(setq
+ helm-gtags-ignore-case t
+ helm-gtags-auto-update t
+ helm-gtags-use-input-at-cursor t
+ helm-gtags-pulse-at-cursor t
+ helm-gtags-prefix-key "\C-cg"
+ helm-gtags-suggested-key-mapping t
+ )
+
+(require 'helm-gtags)
+;; Enable helm-gtags-mode
+(add-hook 'dired-mode-hook 'helm-gtags-mode)
+(add-hook 'eshell-mode-hook 'helm-gtags-mode)
+(add-hook 'c-mode-hook 'helm-gtags-mode)
+(add-hook 'c++-mode-hook 'helm-gtags-mode)
+(add-hook 'asm-mode-hook 'helm-gtags-mode)
+
+(define-key helm-gtags-mode-map (kbd "C-c g a") 'helm-gtags-tags-in-this-function)
+(define-key helm-gtags-mode-map (kbd "C-j") 'helm-gtags-select)
+(define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
+(define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
+(define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
+(define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
+
+(setq imenu-create-index-function #'ggtags-build-imenu-index)
 
 ;;; This is mark-page.  I don't want it.
 (global-unset-key (kbd "C-x C-p"))
@@ -576,8 +609,6 @@ over your shoulder.  ;)"
          (match-chars "''"))
         (progn (delete-char -1) (delete-char 1))
       (progn (backward-delete-char-untabify 1)))))
-
-(setq iy-go-to-char-continue-when-repeating nil)
 
 (defbind make-line-below-and-go-to-it (times) ('("C-M-o"))
   (interactive "p")
@@ -659,7 +690,7 @@ over your shoulder.  ;)"
 
 (require 'flycheck)
 ;;; This is largely copied from flycheck.el, because the path to the tool is
-;;; hard-coded.  What bullshit.
+;;; hard-coded.  Why's that?.
 (flycheck-define-checker c/c++-avr-gcc
   "Check C/C++ using avr-gcc and the built-in code."
   :command ("avr-gcc" "-fshow-column"
@@ -778,6 +809,15 @@ one of the modes specified in the variable
                    "thread_local")
                  'words) . font-lock-keyword-face)))
 
+(require 'cc-mode)
+(require 'semantic)
+
+(global-semanticdb-minor-mode 1)
+(global-semantic-idle-scheduler-mode 1)
+
+(semantic-add-system-include "/usr/include/boost" 'c++-mode)
+(semantic-mode 1)
+
 (setq-default c-doc-comment-style 'javadoc)
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -823,6 +863,31 @@ one of the modes specified in the variable
       (down-list arg)
     ('error
      (up-list) (down-list-or-next arg))))
+
+(defun rotate-windows ()
+  "Rotate your windows"
+  (interactive)
+  (cond ((not (> (count-windows)1))
+         (message "You can't rotate a single window!"))
+        (t
+         (setq i 1)
+         (setq numWindows (count-windows))
+         (while  (< i numWindows)
+           (let* (
+                  (w1 (elt (window-list) i))
+                  (w2 (elt (window-list) (+ (% i numWindows) 1)))
+
+                  (b1 (window-buffer w1))
+                  (b2 (window-buffer w2))
+
+                  (s1 (window-start w1))
+                  (s2 (window-start w2))
+                  )
+             (set-window-buffer w1  b2)
+             (set-window-buffer w2 b1)
+             (set-window-start w1 s2)
+             (set-window-start w2 s1)
+             (setq i (1+ i)))))))
 
 (define-key global-map [remap down-list] 'down-list-or-next)
 

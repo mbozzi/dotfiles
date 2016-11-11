@@ -1,0 +1,72 @@
+!! The color theme described by this file is a derivative work of the Emacs
+!! theme "foggy-night" By Martin Haesler.
+
+!! Copyright (C) 2016, Max Bozzi.
+
+!! This program is free software: you can redistribute it and/or modify it under
+!! the terms of the GNU General Public License as published by the Free Software
+!! Foundation, either version 3 of the License, or (at your option) any later
+!! version.
+!!
+!! This program is distributed in the hope that it will be useful, but WITHOUT
+!! ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+!! FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+!! details.
+!!
+!! You should have received a copy of the GNU General Public License along with
+!! this program. If not, see <http://www.gnu.org/licenses/>.
+
+#define S_yellow        #9e7a5a
+#define S_orange        #e86310
+#define S_red           #e81050
+#define S_magenta       #bd5351
+#define S_violet        #997599
+#define S_blue          #6b83ac
+#define S_cyan          #3e8c9d
+#define S_green         #7ba75b
+
+! Dark
+#define S_base03        #bfbfbf
+#define S_base02        #949494
+#define S_base01        #787878
+#define S_base00        #6d6d6d
+#define S_base0         #494949
+#define S_base1         #323232
+#define S_base2         #222222
+#define S_base3         #111111
+
+*background:              S_base3
+*foreground:              S_base03
+*fading:                  0
+*fading_color:            S_base03
+*cursorColor:             S_blue
+*pointerColorBackground:  S_base01
+*pointerColorForeground:  S_base1
+
+*color0:                  S_base02
+*color1:                  S_red
+*color2:                  S_green
+*color3:                  S_yellow
+*color4:                  S_blue
+*color5:                  S_magenta
+*color6:                  S_cyan
+*color7:                  S_base2
+*color9:                  S_orange
+*color8:                  S_base03
+*color10:                 S_base01
+*color11:                 S_base00
+*color12:                 S_base0
+*color13:                 S_violet
+*color14:                 S_base1
+*color15:                 S_base3
+
+!! URXVT settings:
+URxvt.scrollBar:        false
+
+URxvt*font:             xft:tamsyn:pixelsize=14
+
+URxvt*depth:            32
+
+! Could use macros to splice this together.  Note -- Alpha=0xD1 corresponds to
+! roughly 82 percent opacity.
+URxvt*background:       rgba:2900/2900/2900/d100
