@@ -1,3 +1,4 @@
+!! -*- mode: conf-xdefaults; eval: (rainbow-mode t) -*-
 !! The color theme described by this file is a derivative work of the Emacs
 !! theme "foggy-night" By Martin Haesler.
 
@@ -33,7 +34,7 @@
 #define S_base0         #494949
 #define S_base1         #323232
 #define S_base2         #222222
-#define S_base3         #111111
+#define S_base3         #292929
 
 *background:              S_base3
 *foreground:              S_base03
@@ -50,15 +51,15 @@
 *color4:                  S_blue
 *color5:                  S_magenta
 *color6:                  S_cyan
-*color7:                  S_base2
+*color7:                  S_base02
 *color9:                  S_orange
 *color8:                  S_base03
 *color10:                 S_base01
 *color11:                 S_base00
-*color12:                 S_base0
+*color12:                 S_base02
 *color13:                 S_violet
-*color14:                 S_base1
-*color15:                 S_base3
+*color14:                 S_blue
+*color15:                 S_base02
 
 !! URXVT settings:
 URxvt.scrollBar:        false
